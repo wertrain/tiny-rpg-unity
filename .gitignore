@@ -58,3 +58,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Assets import from Asset Store
+/[Aa]ssets/[Tt]hirdParty/
