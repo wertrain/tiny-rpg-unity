@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Events.Event;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FieldSceneManager : MonoBehaviour, Events.EventCallback
 {
@@ -19,7 +20,7 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
     void Start()
     {
         _eventManager = GetComponent<Events.EventManager>();
-
+#if false
         var eventTree = _eventManager.SceneController.NodeTree;
 
         var rootNode = new Events.Event.Nodes.RootNode(eventTree);
@@ -51,11 +52,17 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
         //_eventManager.gameObject.transform.rotation = Camera.main.transform.rotation;
 
         //_eventManager.Play();
+#endif
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            SceneManager.LoadScene("MainMenuScene");
+        }
+
         _eventManager.UpdateEvent(Time.deltaTime);
     }
 

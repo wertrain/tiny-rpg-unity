@@ -17,7 +17,7 @@ public class MainMenuController : MonoBehaviour
             var localScale = rectTransform.localScale;
             var defaultScale = localScale;
             rectTransform.localScale = new Vector3(0.01f, defaultScale.y, defaultScale.z);
-            LeanTween.moveY(statusWindow, defaultY, 0.25f).setOnComplete(() =>
+            LeanTween.moveY(statusWindow, defaultY, 0.35f).setOnComplete(() =>
             {
                 LeanTween.scale(rectTransform, defaultScale, 0.25f).setOnComplete(() =>
             {
