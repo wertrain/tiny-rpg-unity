@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Events.Event;
@@ -16,9 +17,17 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
     /// </summary>
     private GameObject _followCamera;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    private bool _showMainMenu;
+
     // Start is called before the first frame update
     void Start()
     {
+        //ÉVÅ[ÉìÇ™îjä¸Ç≥ÇÍÇΩÇ∆Ç´Ç…åƒÇ—èoÇ≥ÇÍÇÈÇÊÇ§Ç…Ç∑ÇÈ
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+
         _eventManager = GetComponent<Events.EventManager>();
 #if false
         var eventTree = _eventManager.SceneController.NodeTree;
@@ -58,9 +67,16 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!_showMainMenu)
         {
-            SceneManager.LoadScene("MainMenuScene");
+            if (Input.GetMouseButtonDown(0))
+            {
+                _followCamera = GameObject.Find("PlayerFollowCamera");
+                _followCamera.SetActive(false);
+
+                _showMainMenu = true;
+                SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Additive);
+            }
         }
 
         _eventManager.UpdateEvent(Time.deltaTime);
@@ -69,11 +85,23 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
     /// <summary>
     /// 
     /// </summary>
+    /// <param name="scene"></param>
+    private void OnSceneUnloaded(Scene scene)
+    {
+        _followCamera?.SetActive(true);
+
+        _showMainMenu = false;
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
     /// <param name="sceneController"></param>
     public void OnStartEvent(EventSceneController sceneController)
     {
         _followCamera = GameObject.Find("PlayerFollowCamera");
-        _followCamera.SetActive(false);
+        _followCamera?.SetActive(false);
     }
 
     /// <summary>
@@ -82,6 +110,6 @@ public class FieldSceneManager : MonoBehaviour, Events.EventCallback
     /// <param name="sceneController"></param>
     public void OnEndEvent(EventSceneController sceneController)
     {
-        _followCamera.SetActive(true);
+        _followCamera?.SetActive(true);
     }
 }

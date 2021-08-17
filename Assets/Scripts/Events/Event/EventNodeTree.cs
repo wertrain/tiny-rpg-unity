@@ -72,6 +72,8 @@ namespace Events.Event
         /// <param name="transform"></param>
         public void Update(float time)
         {
+            if (RootNode == null) return;
+
             UpdateAll(RootNode, time, Transform);
         }
 
