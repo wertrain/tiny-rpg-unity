@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class MainMenuController : MonoBehaviour
     {
         protected internal override void Enter()
         {
+            Context.ApplyCurrentParty();
             Context.Open();
         }
 
@@ -89,6 +91,30 @@ public class MainMenuController : MonoBehaviour
             {
                 SceneManager.UnloadSceneAsync("MainMenuScene");
             }
+        }
+    }
+
+    void ApplyCurrentParty()
+    {
+        for (int index = 0; index < MyGameManager.Instance.PartyMembers.Length; ++index)
+        {
+            var member = MyGameManager.Instance.PartyMembers[index];
+            var statusParent = GameObject.Find("CharacterStatus" + index);
+            if (member == null)
+            {
+                statusParent.SetActive(false);
+                continue;
+            }
+
+            var image = GameObject.Find(statusParent.name + "/Image");
+            image.GetComponent<Image>().sprite = member.Face;
+
+            var nameText = GameObject.Find(statusParent.name + "/CharacterNameText");
+            nameText.GetComponent<Text>().text = member.Name;
+
+            var levelText = GameObject.Find(statusParent.name + "/Level/LevelText");
+            levelText.GetComponent<Text>().text = member.CurrentStatus.Level.ToString();
+            //statusWindow.get
         }
     }
 
