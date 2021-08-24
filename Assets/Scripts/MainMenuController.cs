@@ -114,7 +114,12 @@ public class MainMenuController : MonoBehaviour
 
             var levelText = GameObject.Find(statusParent.name + "/Level/LevelText");
             levelText.GetComponent<Text>().text = member.CurrentStatus.Level.ToString();
-            //statusWindow.get
+
+            var hpText = GameObject.Find(statusParent.name + "/HitPoint/HitPointText");
+            hpText.GetComponent<Text>().text = $"{member.CurrentStatus.HitPoint.ToString()} / {member.BaseStatus.HitPoint.ToString()}";
+
+            var mpText = GameObject.Find(statusParent.name + "/MagicPoint/MagicPointText");
+            mpText.GetComponent<Text>().text = $"{member.CurrentStatus.MagicPoint.ToString()} / {member.BaseStatus.MagicPoint.ToString()}";
         }
     }
 

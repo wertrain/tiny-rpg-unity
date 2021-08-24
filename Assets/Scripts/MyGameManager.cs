@@ -48,15 +48,15 @@ public class MyGameManager : MonoBehaviour
             var yozo = new CharacterData();
             yozo.Name = "ヨーゾー";
             yozo.Face = Resources.Load<Sprite>("Characters/Faces/YozoFace");
-            yozo.BaseStatus = new CharacterData.Status();
-            yozo.CurrentStatus = new CharacterData.Status();
+            yozo.BaseStatus = CharacterDatabase.GetBaseStatus(CharacterDatabase.CharacterIds.Yozo);
+            yozo.CurrentStatus = CharacterDatabase.GetBaseStatus(CharacterDatabase.CharacterIds.Yozo);
             PartyMembers[0] = yozo;
 
             var gregor = new CharacterData();
             gregor.Name = "グレゴール";
             gregor.Face = Resources.Load<Sprite>("Characters/Faces/YozoFace");
-            gregor.BaseStatus = new CharacterData.Status();
-            gregor.CurrentStatus = new CharacterData.Status();
+            gregor.BaseStatus = CharacterDatabase.GetBaseStatus(CharacterDatabase.CharacterIds.Gregor);
+            gregor.CurrentStatus = CharacterDatabase.GetBaseStatus(CharacterDatabase.CharacterIds.Gregor);
             PartyMembers[1] = gregor;
         }
     }
