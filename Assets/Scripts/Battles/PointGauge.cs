@@ -34,7 +34,7 @@ public class PointGauge : MonoBehaviour
     public void Start()
     {
         {
-            var background = new GameObject("Background");
+            var background = new GameObject("PointGaugeBackground");
             background.AddComponent<Gauge>();
             background.transform.SetParent(transform);
 
@@ -44,19 +44,27 @@ public class PointGauge : MonoBehaviour
         }
 
         {
-            var front = new GameObject("Front");
-            front.transform.SetParent(transform);
+            var frontMask = new GameObject("PointGaugeFrontMask");
+            frontMask.transform.SetParent(transform);
+            {
+                var rectMask = frontMask.AddComponent<RectMask2D>();
+                rectMask.padding = new Vector4(0, 0, Width * 0.5f, 0);
 
-            var image = front.AddComponent<Gauge>();
-            image.sprite = Resources.Load<Sprite>("Characters/Faces/YozoFace");
-            image.color = Color.green;
-            image.type = Image.Type.Filled;
-            image.fillMethod = Image.FillMethod.Horizontal;
-            image.fillAmount = 0.5f;
+                var rectTransform = frontMask.transform as RectTransform;
+                rectTransform.sizeDelta = new Vector2(Width, Height);
+                rectTransform.anchoredPosition = new Vector3(0, 0, 0);
+            }
 
-            var rectTransform = front.transform as RectTransform;
-            rectTransform.sizeDelta = new Vector2(Width - Edge, Height - Edge);
-            rectTransform.anchoredPosition = new Vector3(0, 0, 0);
+            var front = new GameObject("PointGaugeFront");
+            front.transform.SetParent(frontMask.transform);
+            {
+                var image = front.AddComponent<Image>();
+                image.color = GaugeColor;
+
+                var rectTransform = front.transform as RectTransform;
+                rectTransform.sizeDelta = new Vector2(Width - Edge, Height - Edge);
+                rectTransform.anchoredPosition = new Vector3(0, 0, 0);
+            }
         }
     }
 
