@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Sprites;
 using System.Collections.Generic;
@@ -22,57 +21,81 @@ public class PointGauge : MonoBehaviour
     public int Edge = 2;
 
     /// <summary>
-    /// エッジの色
+    /// 背景色の色
     /// </summary>
-    public Color EdgeColor = Color.white;
+    public Color BackgroundColor = Color.white;
 
     /// <summary>
     /// ゲージの色
     /// </summary>
     public Color GaugeColor = Color.green;
 
+    /// <summary>
+    /// ゲージの割合
+    /// </summary>
+    [SerializeField, Range(0.0f, 1.0f)]
+    public float GaugeRatio = 1.0f;
+
+    /// <summary>
+    /// マスク
+    /// </summary>
+    private RectMask2D _rectMask;
+
     public void Start()
     {
+        var background = new GameObject("PointGaugeBackground");
+        background.transform.SetParent(transform);
         {
-            var background = new GameObject("PointGaugeBackground");
-            background.AddComponent<Gauge>();
-            background.transform.SetParent(transform);
+            var image = background.AddComponent<Gauge>();
+            image.color = BackgroundColor;
 
             var rectTransform = background.transform as RectTransform;
             rectTransform.sizeDelta = new Vector2(Width, Height);
             rectTransform.anchoredPosition = new Vector3(0, 0, 0);
         }
 
+
+        var frontMask = new GameObject("PointGaugeFrontMask");
+        frontMask.transform.SetParent(transform);
         {
-            var frontMask = new GameObject("PointGaugeFrontMask");
-            frontMask.transform.SetParent(transform);
-            {
-                var rectMask = frontMask.AddComponent<RectMask2D>();
-                rectMask.padding = new Vector4(0, 0, Width * 0.5f, 0);
+            _rectMask = frontMask.AddComponent<RectMask2D>();
+            _rectMask.padding = new Vector4(0, 0, Width, 0);
 
-                var rectTransform = frontMask.transform as RectTransform;
-                rectTransform.sizeDelta = new Vector2(Width, Height);
-                rectTransform.anchoredPosition = new Vector3(0, 0, 0);
-            }
-
-            var front = new GameObject("PointGaugeFront");
-            front.transform.SetParent(frontMask.transform);
-            {
-                var image = front.AddComponent<Image>();
-                image.color = GaugeColor;
-
-                var rectTransform = front.transform as RectTransform;
-                rectTransform.sizeDelta = new Vector2(Width - Edge, Height - Edge);
-                rectTransform.anchoredPosition = new Vector3(0, 0, 0);
-            }
+            var rectTransform = frontMask.transform as RectTransform;
+            rectTransform.sizeDelta = new Vector2(Width, Height);
+            rectTransform.anchoredPosition = new Vector3(0, 0, 0);
         }
+
+        var front = new GameObject("PointGaugeFront");
+        front.transform.SetParent(frontMask.transform);
+        {
+            var image = front.AddComponent<Gauge>();
+            image.color = GaugeColor;
+
+            var rectTransform = front.transform as RectTransform;
+            rectTransform.sizeDelta = new Vector2(Width - Edge, Height - Edge);
+            rectTransform.anchoredPosition = new Vector3(0, 0, 0);
+        }
+
+        UpdateGauge();
     }
 
+    /// <summary>
+    /// ゲージの表示割合
+    /// </summary>
+    public void UpdateGauge()
+    {
+        _rectMask.padding = new Vector4(0, 0, Width - (Width * GaugeRatio), 0);
+    }
+
+    /// <summary>
+    /// ゲージクラス
+    /// </summary>
     public class Gauge : Image
     {
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            var radius = 10.0f;
+            var radius = 16.0f;
             var triangleNum = 8;
 
             Vector4 v = GetDrawingDimensions(false);
@@ -161,7 +184,6 @@ public class PointGauge : MonoBehaviour
             var padding = overrideSprite == null ? Vector4.zero : DataUtility.GetPadding(overrideSprite);
             Rect r = GetPixelAdjustedRect();
             var size = overrideSprite == null ? new Vector2(r.width, r.height) : new Vector2(overrideSprite.rect.width, overrideSprite.rect.height);
-            //Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
 
             int spriteW = Mathf.RoundToInt(size.x);
             int spriteH = Mathf.RoundToInt(size.y);

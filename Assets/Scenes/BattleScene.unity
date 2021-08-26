@@ -1941,6 +1941,8 @@ MonoBehaviour:
   Width: 100
   Height: 10
   Edge: 2
+  EdgeColor: {r: 1, g: 1, b: 1, a: 1}
+  GaugeColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &108097570
 GameObject:
   m_ObjectHideFlags: 0
