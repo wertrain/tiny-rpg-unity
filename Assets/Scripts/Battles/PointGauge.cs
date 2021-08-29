@@ -49,6 +49,10 @@ public class PointGauge : MonoBehaviour
             var image = background.AddComponent<Gauge>();
             image.color = BackgroundColor;
 
+            var outline = background.AddComponent<Outline>();
+            outline.effectColor = new Color(0,0,0,0.3f);
+            outline.effectDistance = new Vector2(2 ,-2);
+
             var rectTransform = background.transform as RectTransform;
             rectTransform.sizeDelta = new Vector2(Width, Height);
             rectTransform.anchoredPosition = new Vector3(0, 0, 0);
@@ -81,11 +85,23 @@ public class PointGauge : MonoBehaviour
     }
 
     /// <summary>
-    /// ゲージの表示割合
+    /// ゲージの割合を設定
+    /// </summary>
+    public void SetGaugeRatio(float value)
+    {
+        GaugeRatio = value;
+        UpdateGauge();
+    }
+
+    /// <summary>
+    /// ゲージの表示割合を更新
     /// </summary>
     public void UpdateGauge()
     {
-        _rectMask.padding = new Vector4(0, 0, Width - (Width * GaugeRatio), 0);
+        if (_rectMask != null)
+        {
+            _rectMask.padding = new Vector4(0, 0, Width - (Width * GaugeRatio), 0);
+        }
     }
 
     /// <summary>

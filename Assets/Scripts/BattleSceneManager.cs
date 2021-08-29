@@ -14,6 +14,11 @@ public class BattleSceneManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    private List<BattlerBase> _battlers;
+
+    /// <summary>
+    /// 
+    /// </summary>
     private enum StateEventId : int
     {
         Enter,
