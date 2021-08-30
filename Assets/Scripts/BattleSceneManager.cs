@@ -33,8 +33,19 @@ public class BattleSceneManager : MonoBehaviour
         _stateMachine = new IceMilkTea.Core.ImtStateMachine<BattleSceneManager>(this);
         _stateMachine.AddAnyTransition<EnterState>((int)StateEventId.Enter);
         _stateMachine.AddAnyTransition<CommandSelectState>((int)StateEventId.CommandSelect);
-
         _stateMachine.SetStartState<EnterState>();
+
+        _battlers = new List<BattlerBase>();
+
+        var characters = GameObject.Find("Characters");
+        for (int index = 0; index < MyGameManager.Instance.PartyMembers.Length; ++index)
+        {
+            var member = MyGameManager.Instance.PartyMembers[index];
+            if (member == null) continue;
+
+            var prefab = CharacterDatabase.GetBattleCharacter(member.Id);
+            _battlers.Add(Instantiate(prefab, characters.transform).AddComponent<BattlerPlayer>());
+        }
     }
 
     // Update is called once per frame

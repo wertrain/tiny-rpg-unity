@@ -67,6 +67,11 @@ public class CharacterData
     }
 
     /// <summary>
+    /// キャラクター ID
+    /// </summary>
+    public CharacterDatabase.CharacterIds Id { get; set; }
+
+    /// <summary>
     /// キャラクター名
     /// </summary>
     public string Name { get; set; }

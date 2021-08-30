@@ -5,12 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 戦闘するキャラクター基底クラス
 /// </summary>
-public class BattlerBase
+public class BattlerBase : MonoBehaviour
 {
-    /// <summary>
-    /// 戦闘キャラクター
-    /// </summary>
-    public GameObject Battler;
-
-
+    
 }

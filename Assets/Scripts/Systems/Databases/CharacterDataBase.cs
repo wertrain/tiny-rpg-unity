@@ -52,4 +52,17 @@ public class CharacterDatabase
         }
         return null;
     }
+
+    public static GameObject GetBattleCharacter(CharacterIds id)
+    {
+        switch (id)
+        {
+            case CharacterIds.Yozo:
+                return Resources.Load<GameObject>("Prefabs/Battles/BattleCharacterYozo");
+
+            case CharacterIds.Gregor:
+                return Resources.Load<GameObject>("Prefabs/Battles/BattleCharacterGregor");
+        }
+        return null;
+    }
 }
