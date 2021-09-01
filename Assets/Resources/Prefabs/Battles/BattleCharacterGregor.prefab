@@ -1713,6 +1713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5868764102782534072}
   - component: {fileID: 545539251313777602}
+  - component: {fileID: -880949343051738325}
   m_Layer: 0
   m_Name: BattleCharacterGregor
   m_TagString: Untagged
@@ -1755,6 +1756,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-880949343051738325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6501466642652502786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97104014c71e4846ab82abbb884ebfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6596623807772804172
 GameObject:
   m_ObjectHideFlags: 0
