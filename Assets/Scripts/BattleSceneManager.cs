@@ -22,6 +22,11 @@ public class BattleSceneManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    private List<BattlerBase> _enemys;
+
+    /// <summary>
+    /// 
+    /// </summary>
     private List<GameObject> _windows;
 
     /// <summary>
@@ -32,6 +37,7 @@ public class BattleSceneManager : MonoBehaviour
         Enter,
         CommandSelect,
         EnemySelect,
+        CharacterAction,
         Close,
         Max
     }
@@ -54,9 +60,11 @@ public class BattleSceneManager : MonoBehaviour
         _stateMachine.AddAnyTransition<EnterState>((int)StateEventId.Enter);
         _stateMachine.AddAnyTransition<CommandSelectState>((int)StateEventId.CommandSelect);
         _stateMachine.AddAnyTransition<EnemySelectState>((int)StateEventId.EnemySelect);
+        _stateMachine.AddAnyTransition<CharacterActionState>((int)StateEventId.CharacterAction);
         _stateMachine.SetStartState<EnterState>();
 
         _battlers = new List<BattlerBase>();
+        _enemys = new List<BattlerBase>();
 
         _windows = new List<GameObject>();
         _windows.Add(GameObject.Find("CommandSelect"));
@@ -164,12 +172,46 @@ public class BattleSceneManager : MonoBehaviour
         {
             var enemySelect = Context._windows[(int)WindowId.EnemySelect];
             enemySelect.SetActive(true);
+
+
+            for (int index = 0; index < 4; ++index)
+            {
+                var button = GameObject.Find(enemySelect.name + "/Enemy" + (++index));
+                button.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    OnPress(button);
+                });
+            }
         }
 
         protected internal override void Exit()
         {
-            var enemySelect = Context._windows[(int)WindowId.EnemySelect];
-            enemySelect.SetActive(false);
+            Context._windows[(int)WindowId.EnemySelect].SetActive(false);
+            Context._windows[(int)WindowId.CommandSelect].SetActive(false);
+        }
+
+        private void OnPress(GameObject button)
+        {
+            switch (button.name)
+            {
+                case "Enemy1":
+                    Context._stateMachine.ClearStack();
+                    Context._stateMachine.SendEvent((int)StateEventId.CharacterAction);
+                    Debug.Log(button.name);
+                    break;
+            }
+
+        }
+    }
+
+    /// <summary>
+    /// CharacterAction ステート
+    /// </summary>
+    private class CharacterActionState : IceMilkTea.Core.ImtStateMachine<BattleSceneManager>.State
+    {
+        protected internal override void Enter()
+        {
+
         }
     }
 }
