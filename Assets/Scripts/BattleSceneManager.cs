@@ -17,12 +17,12 @@ public class BattleSceneManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    private List<BattlerBase> _battlers;
+    private List<BattlerPlayer> _battlers;
 
     /// <summary>
     /// 
     /// </summary>
-    private List<BattlerBase> _enemys;
+    private List<BattlerEnemy> _enemys;
 
     /// <summary>
     /// 
@@ -63,8 +63,12 @@ public class BattleSceneManager : MonoBehaviour
         _stateMachine.AddAnyTransition<CharacterActionState>((int)StateEventId.CharacterAction);
         _stateMachine.SetStartState<EnterState>();
 
-        _battlers = new List<BattlerBase>();
-        _enemys = new List<BattlerBase>();
+        _battlers = new List<BattlerPlayer>();
+        _battlers.Add(GameObject.Find("Characters/Character1").GetComponent<BattlerPlayer>());
+        _battlers.Add(GameObject.Find("Characters/Character1").GetComponent<BattlerPlayer>());
+        _enemys = new List<BattlerEnemy>();
+        _enemys.Add(GameObject.Find("Enemys/Enemy").GetComponent<BattlerEnemy>());
+
 
         _windows = new List<GameObject>();
         _windows.Add(GameObject.Find("CommandSelect"));
@@ -173,13 +177,13 @@ public class BattleSceneManager : MonoBehaviour
             var enemySelect = Context._windows[(int)WindowId.EnemySelect];
             enemySelect.SetActive(true);
 
-
             for (int index = 0; index < 4; ++index)
             {
                 var button = GameObject.Find(enemySelect.name + "/Enemy" + (++index));
                 button.GetComponent<Button>().onClick.AddListener(() =>
                 {
-                    OnPress(button);
+                    int enemyIndex = index;
+                    OnPress(button, enemyIndex);
                 });
             }
         }
@@ -190,7 +194,7 @@ public class BattleSceneManager : MonoBehaviour
             Context._windows[(int)WindowId.CommandSelect].SetActive(false);
         }
 
-        private void OnPress(GameObject button)
+        private void OnPress(GameObject button, int index)
         {
             switch (button.name)
             {
@@ -209,9 +213,22 @@ public class BattleSceneManager : MonoBehaviour
     /// </summary>
     private class CharacterActionState : IceMilkTea.Core.ImtStateMachine<BattleSceneManager>.State
     {
+        private float _damegeTimeOffset;
+
         protected internal override void Enter()
         {
+            _damegeTimeOffset = 0;
+            Context._battlers[0].PlayAnimation("Attack");
+        }
 
+        protected internal override void Update()
+        {
+            _damegeTimeOffset += Time.deltaTime;
+            if (_damegeTimeOffset > 0.5f)
+            {
+                Context._enemys[0].PlayAnimation("DamageLight");
+                Context._stateMachine.SendEvent((int)StateEventId.CommandSelect);
+            }
         }
     }
 }

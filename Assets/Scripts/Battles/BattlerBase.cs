@@ -7,6 +7,10 @@ using UnityEngine;
 /// </summary>
 public class BattlerBase : MonoBehaviour
 {
+    public void PlayAnimation(string name)
+    {
+        GetComponent<Animator>().Play(name);
+    }
 
     public void UpdateBase()
     {
