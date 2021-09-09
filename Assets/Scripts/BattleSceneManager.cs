@@ -17,12 +17,17 @@ public class BattleSceneManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    private List<BattlerPlayer> _battlers;
+    private List<Battler> _battlers;
 
     /// <summary>
     /// 
     /// </summary>
-    private List<BattlerEnemy> _enemys;
+    private List<Battler> _enemys;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private List<Battler> _allBattlers;
 
     /// <summary>
     /// 
@@ -52,6 +57,32 @@ public class BattleSceneManager : MonoBehaviour
         Max
     }
 
+    /// <summary>
+    /// 戦闘中のバトルキャラクター定義
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    private class Battler
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public GameObject BattlerObject { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public BattlerBase BattlerComponent { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public CharacterData.Status Status { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public CharacterData.Status BaseStatus { get; set; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -63,12 +94,35 @@ public class BattleSceneManager : MonoBehaviour
         _stateMachine.AddAnyTransition<CharacterActionState>((int)StateEventId.CharacterAction);
         _stateMachine.SetStartState<EnterState>();
 
-        _battlers = new List<BattlerPlayer>();
-        _battlers.Add(GameObject.Find("Characters/Character1").GetComponent<BattlerPlayer>());
-        _battlers.Add(GameObject.Find("Characters/Character1").GetComponent<BattlerPlayer>());
-        _enemys = new List<BattlerEnemy>();
-        _enemys.Add(GameObject.Find("Enemys/Enemy").GetComponent<BattlerEnemy>());
+        _battlers = new List<Battler>();
+        for (int index = 0; index < MyGameManager.Instance.PartyMembers.Length; ++index)
+        {
+            var member = MyGameManager.Instance.PartyMembers[index];
+            if (member == null) continue;
+            var number = index + 1;
+            _battlers.Add(new Battler()
+            {
+                BattlerObject = GameObject.Find("Characters/Character" + number),
+                BattlerComponent = GameObject.Find("Characters/Character" + number).GetComponent<BattlerPlayer>(),
+                Status = member.CurrentStatus,
+                BaseStatus = member.BaseStatus
+            });
+        }
 
+        _enemys = new List<Battler>();
+        for (int index = 0; index < 1; ++index)
+        {
+            var number = index + 1;
+            _enemys.Add(new Battler()
+            {
+                BattlerObject = GameObject.Find("Enemys/Enemy" + number),
+                BattlerComponent = GameObject.Find("Enemys/Enemy" + number).GetComponent<BattlerEnemy>(),
+                Status = EnemyDatabase.GetBaseStatus(EnemyDatabase.EnemyIds.Goblin),
+                BaseStatus = EnemyDatabase.GetBaseStatus(EnemyDatabase.EnemyIds.Goblin),
+            });
+        }
+
+        _allBattlers.Add(_battlers[0]);
 
         _windows = new List<GameObject>();
         _windows.Add(GameObject.Find("CommandSelect"));
