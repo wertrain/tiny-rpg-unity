@@ -60,7 +60,6 @@ public class BattleSceneManager : MonoBehaviour
     /// <summary>
     /// 戦闘中のバトルキャラクター定義
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     private class Battler
     {
         /// <summary>
@@ -272,7 +271,7 @@ public class BattleSceneManager : MonoBehaviour
         protected internal override void Enter()
         {
             _damegeTimeOffset = 0;
-            Context._battlers[0].PlayAnimation("Attack");
+            Context._battlers[0].BattlerComponent.PlayAnimation("Attack");
         }
 
         protected internal override void Update()
@@ -280,7 +279,7 @@ public class BattleSceneManager : MonoBehaviour
             _damegeTimeOffset += Time.deltaTime;
             if (_damegeTimeOffset > 0.5f)
             {
-                Context._enemys[0].PlayAnimation("DamageLight");
+                Context._enemys[0].BattlerComponent.PlayAnimation("DamageLight");
                 Context._stateMachine.SendEvent((int)StateEventId.CommandSelect);
             }
         }
