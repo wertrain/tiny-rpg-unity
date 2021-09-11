@@ -121,7 +121,13 @@ public class BattleSceneManager : MonoBehaviour
             });
         }
 
-        _allBattlers.Add(_battlers[0]);
+        _allBattlers.AddRange(_battlers);
+        _allBattlers.AddRange(_enemys);
+
+        _allBattlers.Sort((a, b) => 
+        {
+            return a.Status.Agility - b.Status.Agility;
+        });
 
         _windows = new List<GameObject>();
         _windows.Add(GameObject.Find("CommandSelect"));
