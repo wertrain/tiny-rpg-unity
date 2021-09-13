@@ -12,6 +12,11 @@ public class BattlerBase : MonoBehaviour
         GetComponent<Animator>().Play(name);
     }
 
+    public bool IsPlayingAnimation(string name)
+    {
+        return GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName(name);
+    }
+
     public void UpdateBase()
     {
         if (_isActive)

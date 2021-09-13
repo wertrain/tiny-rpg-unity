@@ -20,12 +20,12 @@ public class CharacterDatabase
     /// <summary>
     /// 
     /// </summary>
-    public static CharacterData.Status GetBaseStatus(CharacterIds id)
+    public static BattlerData.Status GetBaseStatus(CharacterIds id)
     {
         switch (id)
         {
             case CharacterIds.Yozo:
-                return new CharacterData.Status()
+                return new BattlerData.Status()
                 {
                     Level = 1,
                     HitPoint = 30,
@@ -38,7 +38,7 @@ public class CharacterDatabase
                 };
 
             case CharacterIds.Gregor:
-                return new CharacterData.Status()
+                return new BattlerData.Status()
                 {
                     Level = 1,
                     HitPoint = 40,

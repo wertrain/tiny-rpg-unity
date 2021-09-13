@@ -15,12 +15,32 @@ public class EnemyDatabase
     /// <summary>
     /// 
     /// </summary>
-    public static CharacterData.Status GetBaseStatus(EnemyIds id)
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public static EnemyData GetEnemyData(EnemyIds id)
     {
         switch (id)
         {
             case EnemyIds.Goblin:
-                return new CharacterData.Status()
+                return new EnemyData()
+                {
+                    Name = "ƒSƒuƒŠƒ“",
+                    CurrentStatus = GetBaseStatus(id),
+                    BaseStatus = GetBaseStatus(id),
+                };
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static BattlerData.Status GetBaseStatus(EnemyIds id)
+    {
+        switch (id)
+        {
+            case EnemyIds.Goblin:
+                return new BattlerData.Status()
                 {
                     Level = 1,
                     HitPoint = 8,
