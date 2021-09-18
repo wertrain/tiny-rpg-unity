@@ -37,7 +37,10 @@ public class PopupNumber : MonoBehaviour
             text.fontSize = FontSize;
             text.color = Color.white;
             text.font = Font;
-            text.rectTransform.anchoredPosition = new Vector3(index * FontSize, 0, 0);
+
+            var charWidth = (FontSize * 0.65f);
+            var half = (textNumber.Length * charWidth) * 0.5f;
+            text.rectTransform.anchoredPosition = new Vector3((index * charWidth) + half, 0, 0);
 
             var outline = container.AddComponent<Outline>();
             outline.effectDistance = new Vector2(1, -1);
@@ -50,7 +53,28 @@ public class PopupNumber : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        switch (_sequence)
+        {
+            case 0:
+                if (_time > 0.08f)
+                {
+                    _time = 0;
+
+                    _popupChars[_activeIndex].Start();
+
+                    if (++_activeIndex >= _popupChars.Count)
+                    {
+                        _sequence = 1;
+                    }
+                }
+                _time += Time.deltaTime;
+                break;
+        }
+
+        foreach (var p in _popupChars)
+        {
+            p.Update(Time.deltaTime);
+        }
     }
 
     private class PopupChar
@@ -68,6 +92,7 @@ public class PopupNumber : MonoBehaviour
         {
             GameObject = gameObject;
             _time = -1;
+            GameObject.SetActive(false);
         }
 
         /// <summary>
@@ -76,6 +101,7 @@ public class PopupNumber : MonoBehaviour
         public void Start()
         {
             _time = 0;
+            GameObject.SetActive(true);
         }
 
         /// <summary>
@@ -88,13 +114,13 @@ public class PopupNumber : MonoBehaviour
 
             _time += deltaTime;
 
-            if (_time < 0.5f)
+            if (_time < 0.1f)
             {
-                _y += 1.0f;
+                _y += 1.2f;
             }
-            else if (_time < 1.0f)
+            else
             {
-                _y -= 1.0f;
+                _y -= 1.3f;
 
                 if (_y <= 0.0f)
                 {
@@ -117,6 +143,21 @@ public class PopupNumber : MonoBehaviour
         /// </summary>
         private float _y;
     }
+
+    /// <summary>
+    /// シーケンス
+    /// </summary>
+    private int _sequence;
+
+    /// <summary>
+    /// 時間
+    /// </summary>
+    private float _time;
+
+    /// <summary>
+    /// インデックス
+    /// </summary>
+    private int _activeIndex;
 
     /// <summary>
     /// 
