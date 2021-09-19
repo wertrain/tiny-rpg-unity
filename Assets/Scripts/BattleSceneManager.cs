@@ -50,6 +50,11 @@ public class BattleSceneManager : MonoBehaviour
     private int _turnCount;
 
     /// <summary>
+    /// ダメージ表示管理
+    /// </summary>
+    private PopupNumberFactory _popupNumberFactory;
+
+    /// <summary>
     /// 
     /// </summary>
     private enum StateEventId : int
@@ -173,12 +178,26 @@ public class BattleSceneManager : MonoBehaviour
 
         _windows[(int)WindowId.CommandSelect].SetActive(false);
         _windows[(int)WindowId.EnemySelect].SetActive(false);
+
+        _popupNumberFactory = GameObject.Find("PopupNumber").GetComponent<PopupNumberFactory>();
     }
 
     // Update is called once per frame
     void Update()
     {
         _stateMachine.Update();
+    }
+
+    /// <summary>
+    /// ダメージの表示
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="damage"></param>
+    private void PrintDamage(GameObject target, int damage)
+    {
+        var offset = new Vector2(0.0f, 0.0f);
+        var position = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position);
+        _popupNumberFactory.Print(position + offset, damage);
     }
 
     /// <summary>
@@ -405,6 +424,9 @@ public class BattleSceneManager : MonoBehaviour
                     foreach (var target in Context._currentTargets)
                     {
                         target.BattlerComponent.PlayAnimation("DamageLight");
+
+                        var position = RectTransformUtility.WorldToScreenPoint(Camera.main, target.BattlerObject.transform.position);
+                        Context.PrintDamage(target.BattlerObject, 99999);
                     }
                     _damageActionPlayed = true;
                 }
@@ -446,6 +468,7 @@ public class BattleSceneManager : MonoBehaviour
                     foreach (var target in Context._currentTargets)
                     {
                         target.BattlerComponent.PlayAnimation("DamageLight");
+                        Context.PrintDamage(target.BattlerObject, 1252);
                     }
                     _damageActionPlayed = true;
                 }
