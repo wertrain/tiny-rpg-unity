@@ -17,13 +17,16 @@ public class ScriptManager : MonoBehaviour
 
         var interpreter = new Tsumugi.Interpreter();
         ///interpreter.OnPrintError += Interpreter_OnPrintError;
-        interpreter.Executor = new Tsumugi.Unity.CommandExecutor(Text);
+        _commandExecutor = new Tsumugi.Unity.CommandExecutor(Text);
+        interpreter.Executor = _commandExecutor;
         interpreter.Execute(script);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        _commandExecutor.Update(Time.deltaTime);
     }
+
+    private Tsumugi.Unity.CommandExecutor _commandExecutor;
 }

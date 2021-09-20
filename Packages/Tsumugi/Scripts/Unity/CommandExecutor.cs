@@ -9,7 +9,7 @@ namespace Tsumugi.Unity
     {
         public void PrintText(string text)
         {
-            _textComponent.text = text;
+            _activeText = text;
         }
 
         public void SetDefaultFont(Tsumugi.Text.Executing.Font font)
@@ -44,16 +44,76 @@ namespace Tsumugi.Unity
 
         public void Update(float deltaTime)
         {
-
+            _stateMachine.Update();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
-        public CommandExecutor(UnityEngine.UI.Text text)
+        public CommandExecutor(UnityEngine.UI.Text textComponent)
         {
-            _textComponent = text;
+            _textComponent = textComponent;
+
+            _stateMachine = new StateMachine<CommandExecutor>(this);
+            _stateMachine.AddAnyTransition<PrintingState>((int)StateEventId.Printing);
+            _stateMachine.AddAnyTransition<WaitKayState>((int)StateEventId.WaitKay);
+            _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
+            _stateMachine.SetStartState<ProcessedState>();
+        }
+
+        /// <summary>
+        /// Printing ステート
+        /// </summary>
+        private class PrintingState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Enter()
+            {
+                _index = 1;
+            }
+
+            protected internal override void Update()
+            {
+                if (_time > 0.1f)
+                {
+                    if (++_index >= Context._activeText.Length)
+                    {
+                        Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
+                    }
+                    _time = 0;
+                }
+                _time += Time.deltaTime;
+
+                Context._textComponent.text = Context._activeText.Substring(0, _index);
+                if (TextExtension.IsOverflowingVerticle(Context._textComponent))
+                {
+                    Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
+                }
+            }
+
+            private int _index;
+
+            private float _time;
+        }
+
+        /// <summary>
+        /// WaitKay ステート
+        /// </summary>
+        private class WaitKayState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Enter()
+            {
+            }
+        }
+
+        /// <summary>
+        /// Processed ステート
+        /// </summary>
+        private class ProcessedState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Enter()
+            {
+            }
         }
 
         /// <summary>
@@ -68,6 +128,11 @@ namespace Tsumugi.Unity
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        private string _activeText;
+
+        /// <summary>
         /// テキストを表示するコンポーネント
         /// </summary>
         private UnityEngine.UI.Text _textComponent;
@@ -76,5 +141,46 @@ namespace Tsumugi.Unity
         /// 
         /// </summary>
         private StateMachine<CommandExecutor> _stateMachine;
+    }
+
+    public class TextExtension
+    {
+        /// <summary>
+        /// Returns true when the Text object contains more lines of text than will fit in the text container vertically
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsOverflowingVerticle(UnityEngine.UI.Text text)
+        {
+            return UnityEngine.UI.LayoutUtility.GetPreferredHeight(text.rectTransform) > GetCalculatedPermissibleHeight(text);
+        }
+
+        private static float GetCalculatedPermissibleHeight(UnityEngine.UI.Text text)
+        {
+            if (cachedCalculatedPermissibleHeight != -1) return cachedCalculatedPermissibleHeight;
+
+            cachedCalculatedPermissibleHeight = text.gameObject.GetComponent<RectTransform>().rect.height;
+            return cachedCalculatedPermissibleHeight;
+        }
+        private static float cachedCalculatedPermissibleHeight = -1;
+
+        /// <summary>
+        /// Returns true when the Text object contains more character than will fit in the text container horizontally
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsOverflowingHorizontal(UnityEngine.UI.Text text)
+        {
+            return UnityEngine.UI.LayoutUtility.GetPreferredWidth(text.rectTransform) > GetCalculatedPermissibleHeight(text);
+        }
+
+        private static float GetCalculatedPermissibleWidth(UnityEngine.UI.Text text)
+        {
+            if (cachedCalculatedPermissiblWidth != -1) return cachedCalculatedPermissiblWidth;
+
+            cachedCalculatedPermissiblWidth = text.gameObject.GetComponent<RectTransform>().rect.width;
+            return cachedCalculatedPermissiblWidth;
+        }
+
+        private static float cachedCalculatedPermissiblWidth = -1;
+
     }
 }
