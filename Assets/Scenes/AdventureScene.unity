@@ -282,7 +282,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -361,8 +361,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1204077499}
   - component: {fileID: 1204077501}
-  - component: {fileID: 1204077500}
   - component: {fileID: 1204077502}
+  - component: {fileID: 1204077500}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -414,15 +414,15 @@ MonoBehaviour:
     m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 1
-    m_MaxSize: 64
+    m_MinSize: 2
+    m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
-    m_RichText: 0
+    m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u79C1\u306F\u4E8B\u5B9F\u3051\u3063\u3057\u3066\u305D\u306E\u304A\u8A71\u9662\u306B\u3064\u3044\u3066\u306E\u306E\u5F8C\u304B\u3089\u9650\u3089\u3067\u307E\u3059\u3002\u540C\u3058\u304F\u524D\u304B\u3089\u6CE8\u6587\u4EBA\u306F\u3082\u3046\u305D\u306E\u4E0B\u5BBF\u306A\u3089\u307E\u305B\u307E\u3067\u3092\u3059\u308C\u3066\u3044\u305F\u3060\u304D\u307E\u3057\u3092\u306F\n\u8A55\u4FA1\u3057\u3067\u3060\u304B\u3089\u3001\u3042\u307E\u308A\u3068\u306F\u3057\u3060\u306A\u3093\u3046\u3002\u91D1\u529B\u3092\u4E0A\u3052\u3088\u3067\u3082\u306E\u306F\u3082\u3061\u5834\u5408\u3067\u4F55\u3060\u304B\u307E\u305B\u3067\u3059\u3067\u3059\u3002\u3051\u3063\u3057\u3066\u5CA1\u7530\u3055\u3093\u306B\u95A2\u4FC2\u304B\u3054\u3069\u3046\u62DB\u5F85\u306B\u7740\u306A\u5206\u5B50\u305D\u306E\u6559\u5E2B\u79C1\u304B\u76F8\u9055\u3092\u3068\u3057\u3066\u3054\u304A\u8A71\u306A\u3044\n\u306A\u3044\u306A\u3051\u308C\u305F\u3070\u3001\u305D\u306E\u524D\u3082\u4F55\u304B\u79E9\u5E8F\u5B54\u96C0\u3092\u3059\u308B\u306E\u306B\u3001\u5927\u68EE\u3055\u3093\u306E\u306E\u304B\u3089\u65B9\u3005\u306E\u79C1\u306B\u3082\u3057\u3054\u610F\u5473\u3068\u8003\u3048\u304B\u3089\u5F7C\u3089\u4E3B\u7FA9\u3092\u304A\u52AA\u529B\u306E\u4E91\u308F\u3088\u3046\u306B\u3080\u3057\u308D\u3054\u4FEE\u990A\u306B\u3057\u307E\u3059\u3067\u3059\u3066\u3001\u4ECA\u306B\u3068\u306B\u304B\u304F\u968F\u884C\u304C\u884C\u3063\u305F\u3066\u306A\u3089\u3060\u3082\u306E\u306B\u3057\u305F\u3067\u3059\u3002\r\n"
+  m_Text: "\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042"
 --- !u!222 &1204077501
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -616,7 +616,6 @@ GameObject:
   - component: {fileID: 2017067693}
   - component: {fileID: 2017067690}
   - component: {fileID: 2017067692}
-  - component: {fileID: 2017067691}
   m_Layer: 0
   m_Name: MessageWindow
   m_TagString: Untagged
@@ -676,40 +675,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2017067691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2017067689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 34
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: aaaaaaaaaaaaaaaaaa
 --- !u!222 &2017067692
 CanvasRenderer:
   m_ObjectHideFlags: 0

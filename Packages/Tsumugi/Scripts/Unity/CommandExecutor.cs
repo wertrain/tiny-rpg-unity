@@ -9,7 +9,7 @@ namespace Tsumugi.Unity
     {
         public void PrintText(string text)
         {
-            _activeText = text;
+            _activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペース
         }
 
         public void SetDefaultFont(Tsumugi.Text.Executing.Font font)
@@ -59,7 +59,7 @@ namespace Tsumugi.Unity
             _stateMachine.AddAnyTransition<PrintingState>((int)StateEventId.Printing);
             _stateMachine.AddAnyTransition<WaitKayState>((int)StateEventId.WaitKay);
             _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
-            _stateMachine.SetStartState<ProcessedState>();
+            _stateMachine.SetStartState<PrintingState>();
         }
 
         /// <summary>
@@ -74,19 +74,24 @@ namespace Tsumugi.Unity
 
             protected internal override void Update()
             {
-                if (_time > 0.1f)
+                if (_time > 0.01f)
                 {
+                    _time = 0;
+
                     if (++_index >= Context._activeText.Length)
                     {
+                        Context._activeText = string.Empty;
                         Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
+                        return;
                     }
-                    _time = 0;
                 }
                 _time += Time.deltaTime;
 
                 Context._textComponent.text = Context._activeText.Substring(0, _index);
                 if (TextExtension.IsOverflowingVerticle(Context._textComponent))
                 {
+                    var nextIndex = _index - 1;
+                    Context._activeText = Context._activeText.Substring(nextIndex, Context._activeText.Length - nextIndex);
                     Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
                 }
             }
@@ -101,8 +106,13 @@ namespace Tsumugi.Unity
         /// </summary>
         private class WaitKayState : StateMachine<CommandExecutor>.State
         {
-            protected internal override void Enter()
+            protected internal override void Update()
             {
+                if (Input.anyKey)
+                {
+                    Context._stateMachine.SendEvent(Context._activeText.Length == 0 ?
+                        (int)StateEventId.Processed : (int)StateEventId.Printing);
+                }
             }
         }
 
@@ -113,6 +123,7 @@ namespace Tsumugi.Unity
         {
             protected internal override void Enter()
             {
+                Context._textComponent.text = string.Empty;
             }
         }
 
