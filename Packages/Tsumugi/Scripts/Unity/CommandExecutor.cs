@@ -9,7 +9,9 @@ namespace Tsumugi.Unity
     {
         public void PrintText(string text)
         {
-            _activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペース
+            _activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペースに置き換える
+
+            _stateMachine.SendEvent((int)StateEventId.Printing);
         }
 
         public void SetDefaultFont(Tsumugi.Text.Executing.Font font)
@@ -24,22 +26,24 @@ namespace Tsumugi.Unity
 
         public void StartNewLine()
         {
-            throw new System.NotImplementedException();
+            _stateMachine.SendEvent((int)StateEventId.Newline);
         }
 
         public void StartNewPage()
         {
-            throw new System.NotImplementedException();
+            _textComponent.text = string.Empty;
         }
 
         public void WaitAnyKey()
         {
-            throw new System.NotImplementedException();
+            _stateMachine.SendEvent((int)StateEventId.WaitKay);
         }
 
         public void WaitTime(int millisec)
         {
-            throw new System.NotImplementedException();
+            _waitTime = millisec / 1000.0f;
+
+            _stateMachine.SendEvent((int)StateEventId.WaitTime);
         }
 
         public void Update(float deltaTime)
@@ -54,12 +58,33 @@ namespace Tsumugi.Unity
         public CommandExecutor(UnityEngine.UI.Text textComponent)
         {
             _textComponent = textComponent;
+            _textComponent.text = string.Empty;
 
             _stateMachine = new StateMachine<CommandExecutor>(this);
             _stateMachine.AddAnyTransition<PrintingState>((int)StateEventId.Printing);
             _stateMachine.AddAnyTransition<WaitKayState>((int)StateEventId.WaitKay);
+            _stateMachine.AddAnyTransition<WaitTimeState>((int)StateEventId.WaitTime);
+            _stateMachine.AddAnyTransition<NewlineState>((int)StateEventId.Newline);
             _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
             _stateMachine.SetStartState<PrintingState>();
+            _stateMachine.Update();
+        }
+
+        /// <summary>
+        /// 処理が完了しているかどうか
+        /// </summary>
+        public bool IsProcessed()
+        {
+            return _stateMachine.IsCurrentState<ProcessedState>();
+        }
+
+        /// <summary>
+        /// ページ送り、またはページ内の文字表示
+        /// </summary>
+        /// <returns></returns>
+        private bool InputAnyKeys()
+        {
+            return Input.anyKeyDown;
         }
 
         /// <summary>
@@ -70,6 +95,7 @@ namespace Tsumugi.Unity
             protected internal override void Enter()
             {
                 _index = 1;
+                _text = Context._textComponent.text;
             }
 
             protected internal override void Update()
@@ -78,26 +104,54 @@ namespace Tsumugi.Unity
                 {
                     _time = 0;
 
-                    if (++_index >= Context._activeText.Length)
+                    if (++_index > Context._activeText.Length)
                     {
                         Context._activeText = string.Empty;
-                        Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
+                        Context._stateMachine.SendEvent((int)StateEventId.Processed);
                         return;
                     }
                 }
                 _time += Time.deltaTime;
 
-                Context._textComponent.text = Context._activeText.Substring(0, _index);
-                if (TextExtension.IsOverflowingVerticle(Context._textComponent))
+                if (Context.InputAnyKeys())
                 {
-                    var nextIndex = _index - 1;
+                    int pass = _index;
+                    while(!TextExtension.IsOverflowingVerticle(Context._textComponent))
+                    {
+                        Context._textComponent.text = _text + Context._activeText.Substring(0, pass);
+
+                        if (++pass >= Context._activeText.Length)
+                            break;
+                    }
+                    var nextIndex = pass - 1;
                     Context._activeText = Context._activeText.Substring(nextIndex, Context._activeText.Length - nextIndex);
                     Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
                 }
+                else
+                {
+                    Context._textComponent.text = _text + Context._activeText.Substring(0, _index);
+                    if (TextExtension.IsOverflowingVerticle(Context._textComponent))
+                    {
+                        var nextIndex = _index - 1;
+                        Context._activeText = Context._activeText.Substring(nextIndex, Context._activeText.Length - nextIndex);
+                        Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
+                    }
+                }
             }
 
+            /// <summary>
+            /// 元の文字列
+            /// </summary>
+            private string _text;
+
+            /// <summary>
+            /// 文字の表示インデックス
+            /// </summary>
             private int _index;
 
+            /// <summary>
+            /// 時間
+            /// </summary>
             private float _time;
         }
 
@@ -108,11 +162,49 @@ namespace Tsumugi.Unity
         {
             protected internal override void Update()
             {
-                if (Input.anyKey)
+                if (Context.InputAnyKeys())
                 {
                     Context._stateMachine.SendEvent(Context._activeText.Length == 0 ?
                         (int)StateEventId.Processed : (int)StateEventId.Printing);
+
+                    Context._textComponent.text = string.Empty;
                 }
+            }
+        }
+
+        /// <summary>
+        /// WaitTime ステート
+        /// </summary>
+        private class WaitTimeState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Enter()
+            {
+                _time = 0;
+            }
+
+            protected internal override void Update()
+            {
+                if ((_time += Time.deltaTime) > Context._waitTime)
+                {
+                    Context._stateMachine.SendEvent((int)StateEventId.Processed);
+                }
+            }
+
+            /// <summary>
+            /// 時間
+            /// </summary>
+            private float _time;
+        }
+
+        /// <summary>
+        /// Newline ステート
+        /// </summary>
+        private class NewlineState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Enter()
+            {
+                Context._textComponent.text += System.Environment.NewLine;
+                Context._stateMachine.SendEvent((int)StateEventId.Processed);
             }
         }
 
@@ -123,25 +215,32 @@ namespace Tsumugi.Unity
         {
             protected internal override void Enter()
             {
-                Context._textComponent.text = string.Empty;
+                //Context._textComponent.text = string.Empty;
             }
         }
 
         /// <summary>
-        /// 
+        /// ステート ID
         /// </summary>
         private enum StateEventId : int
         {
             Printing,
             WaitKay,
+            WaitTime,
+            Newline,
             Processed,
             Max
         }
 
         /// <summary>
-        /// 
+        /// 表示処理中の文字列
         /// </summary>
         private string _activeText;
+
+        /// <summary>
+        /// WaitTime ステートの待機時間を格納
+        /// </summary>
+        private float _waitTime;
 
         /// <summary>
         /// テキストを表示するコンポーネント
@@ -149,11 +248,14 @@ namespace Tsumugi.Unity
         private UnityEngine.UI.Text _textComponent;
 
         /// <summary>
-        /// 
+        /// ステートマシン
         /// </summary>
         private StateMachine<CommandExecutor> _stateMachine;
     }
 
+    /// <summary>
+    /// テキスト拡張
+    /// </summary>
     public class TextExtension
     {
         /// <summary>
