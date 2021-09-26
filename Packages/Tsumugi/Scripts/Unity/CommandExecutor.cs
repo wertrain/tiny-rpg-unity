@@ -79,6 +79,15 @@ namespace Tsumugi.Unity
         }
 
         /// <summary>
+        /// キー入力待ちの状態かどうか
+        /// </summary>
+        /// <returns></returns>
+        public bool IsKeyWait()
+        {
+            return _stateMachine.IsCurrentState<WaitKayState>();
+        }
+
+        /// <summary>
         /// ページ送り、またはページ内の文字表示
         /// </summary>
         /// <returns></returns>
