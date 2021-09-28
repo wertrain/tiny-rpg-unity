@@ -52,7 +52,7 @@ namespace Tsumugi.Text.Commanding.Commands
         /// <summary>
         /// 縁取りするか
         /// </summary>
-        public bool Edge {get;set;}
+        public bool Edge { get; set; }
 
         /// <summary>
         /// 縁取りの色

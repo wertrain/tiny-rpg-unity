@@ -314,6 +314,24 @@ namespace Tsumugi
                             Bold = cmd.Bold,
                         });
                         break;
+
+                    case Text.Commanding.Commands.QuakeCommand cmd:
+                        executor.SetFont(new Text.Executing.Font
+                        {
+                            Time = cmd.Time.GetValueOrDefault(),
+                            Face = cmd.Face,
+                            Color = cmd.Color,
+                            RubySize = cmd.RubySize,
+                            RubyOffset = cmd.RubyOffset,
+                            RubyFace = cmd.RubyFace,
+                            Shadow = cmd.Shadow,
+                            ShadowColor = cmd.ShadowColor,
+                            Edge = cmd.Edge,
+                            EdgeColor = cmd.EdgeColor,
+                            Bold = cmd.Bold,
+                        });
+                        break;
+
                 }
             }
 

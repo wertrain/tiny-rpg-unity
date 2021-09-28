@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Tsumugi.Text.Executing;
@@ -46,8 +47,35 @@ namespace Tsumugi.Unity
             _stateMachine.SendEvent((int)StateEventId.WaitTime);
         }
 
+        public void Quake(int millisec, int powerH, int powerV)
+        {
+            float time = 0;
+            var defaultPosition = new Vector2(_textComponent.rectTransform.anchoredPosition.x, _textComponent.rectTransform.anchoredPosition.y);
+            _elementUpdater.Add(
+                new Func<float, bool>((float deltaTime) =>
+                {
+                    if ((time += deltaTime) < millisec)
+                    {
+                        _textComponent.rectTransform.anchoredPosition = new Vector2(
+                            defaultPosition.x + 10, defaultPosition.y + 10);
+                        return true;
+                    }
+                    _textComponent.rectTransform.anchoredPosition = defaultPosition;
+                    return false;
+                })
+            );
+        }
+
         public void Update(float deltaTime)
         {
+            foreach (var updater in _elementUpdater.ToArray())
+            {
+                if (!updater(deltaTime))
+                {
+                    _elementUpdater.Remove(updater);
+                }
+            }
+
             _stateMachine.Update();
         }
 
@@ -68,6 +96,8 @@ namespace Tsumugi.Unity
             _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
             _stateMachine.SetStartState<PrintingState>();
             _stateMachine.Update();
+
+            _elementUpdater = new List<Func<float, bool>>();
         }
 
         /// <summary>
@@ -242,6 +272,11 @@ namespace Tsumugi.Unity
         }
 
         /// <summary>
+        /// 要素更新デリゲーター
+        /// </summary>
+        delegate void ElementUpdater();
+
+        /// <summary>
         /// 表示処理中の文字列
         /// </summary>
         private string _activeText;
@@ -260,6 +295,11 @@ namespace Tsumugi.Unity
         /// ステートマシン
         /// </summary>
         private StateMachine<CommandExecutor> _stateMachine;
+
+        /// <summary>
+        /// 更新処理
+        /// </summary>
+        private List<Func<float, bool>> _elementUpdater;
     }
 
     /// <summary>

@@ -42,5 +42,13 @@
         /// </summary>
         /// <param name="font"></param>
         void SetDefaultFont(Font font);
+
+        /// <summary>
+        /// 画面を揺らす
+        /// </summary>
+        /// <param name="millisec"></param>
+        /// <param name="powerH"></param>
+        /// <param name="powerV"></param>
+        void Quake(int millisec, int powerH, int powerV);
     }
 }

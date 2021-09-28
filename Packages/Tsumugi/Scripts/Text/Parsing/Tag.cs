@@ -88,6 +88,11 @@ namespace Tsumugi.Text.Parsing
         /// デフォルトフォントの設定
         /// </summary>
         public const string DefaultFont = "deffont";
+
+        /// <summary>
+        /// 画面を揺らす
+        /// </summary>
+        public const string Quake = "quake";
     }
 
     /// <summary>
@@ -226,6 +231,16 @@ namespace Tsumugi.Text.Parsing
                             Bold = GetAttributeValueOrDefault("bold", tag, false),
                         };
                     }
+
+                case TagName.Quake:
+                    {
+                        return new Commanding.Commands.QuakeCommand()
+                        {
+                            Time = ParseAttributeValueOrVariable<int>("time", tag),
+                            PowerH = ParseAttributeValueOrVariable<int>("hmax", tag),
+                            PowerV = ParseAttributeValueOrVariable<int>("vmax", tag),
+                        };
+                    }
             }
 
             return null;
@@ -288,6 +303,45 @@ namespace Tsumugi.Text.Parsing
 
             return (T)Convert.ChangeType(attr.Value, typeof(T));
         }
+
+        /// <summary>
+        /// 任意の型の値か、その名前を持つ変数としてパースする
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        private static Commanding.ReferenceVariable<T> ParseAttributeValueOrVariable<T>(string name, Tag tag)
+        {
+            return ParseAttributeValueOrVariable<T>(name, tag, default(T));
+        }
+
+        /// <summary>
+        /// 任意の型の値か、その名前を持つ変数としてパースする
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        private static Commanding.ReferenceVariable<T> ParseAttributeValueOrVariable<T>(string name, Tag tag, T defaultValue)
+        {
+            var attr = tag.Attributes.FirstOrDefault(s => s.Name == name);
+
+            if (attr == null || string.IsNullOrWhiteSpace(attr.Value))
+            {
+                return new Commanding.ReferenceVariable<T>(defaultValue);
+            }
+
+            try
+            {
+                return new Commanding.ReferenceVariable<T>((T)Convert.ChangeType(attr.Value, typeof(T)));
+            }
+            catch
+            {
+                return new Commanding.ReferenceVariable<T>(attr.Value);
+            }
+        }
+
 
         /// <summary>
         /// コマンドファクトリの例外
