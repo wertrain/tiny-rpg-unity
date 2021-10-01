@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Tsumugi.Unity
 {
-    public class CommandExecutor : Tsumugi.Text.Executing.ICommandExecutor
+    public class CommandExecutor : ICommandExecutor
     {
         public void PrintText(string text)
         {
@@ -64,6 +64,11 @@ namespace Tsumugi.Unity
                     return false;
                 })
             );
+        }
+
+        public void Delay(int speed)
+        {
+            throw new NotImplementedException();
         }
 
         public void Update(float deltaTime)

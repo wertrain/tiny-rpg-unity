@@ -93,6 +93,11 @@ namespace Tsumugi.Text.Parsing
         /// 画面を揺らす
         /// </summary>
         public const string Quake = "quake";
+
+        /// <summary>
+        /// 文字列速度を設定
+        /// </summary>
+        public const string Delay = "delay";
     }
 
     /// <summary>
@@ -241,6 +246,9 @@ namespace Tsumugi.Text.Parsing
                             PowerV = ParseAttributeValueOrVariable<int>("vmax", tag),
                         };
                     }
+
+                case TagName.Delay:
+                    return new Commanding.Commands.DelayCommand(ParseAttributeValueOrVariable<int>("speed", tag));
             }
 
             return null;

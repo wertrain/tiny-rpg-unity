@@ -50,5 +50,11 @@
         /// <param name="powerH"></param>
         /// <param name="powerV"></param>
         void Quake(int millisec, int powerH, int powerV);
+
+        /// <summary>
+        /// 文字送り速度
+        /// </summary>
+        /// <param name="speed"></param>
+        void Delay(int speed);
     }
 }
