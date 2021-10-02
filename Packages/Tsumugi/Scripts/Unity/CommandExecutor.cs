@@ -68,7 +68,7 @@ namespace Tsumugi.Unity
 
         public void Delay(int speed)
         {
-            throw new NotImplementedException();
+            _delayTime = speed / 1000.0f;
         }
 
         public void Update(float deltaTime)
@@ -101,6 +101,8 @@ namespace Tsumugi.Unity
             _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
             _stateMachine.SetStartState<PrintingState>();
             _stateMachine.Update();
+
+            _delayTime = 0.01f;
 
             _elementUpdater = new List<Func<float, bool>>();
         }
@@ -144,7 +146,7 @@ namespace Tsumugi.Unity
 
             protected internal override void Update()
             {
-                if (_time > 0.01f)
+                if (_time > Context._delayTime)
                 {
                     _time = 0;
 
@@ -290,6 +292,11 @@ namespace Tsumugi.Unity
         /// WaitTime ステートの待機時間を格納
         /// </summary>
         private float _waitTime;
+
+        /// <summary>
+        /// 文字送り時間
+        /// </summary>
+        private float _delayTime;
 
         /// <summary>
         /// テキストを表示するコンポーネント

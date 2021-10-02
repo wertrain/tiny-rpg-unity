@@ -23,6 +23,16 @@
         /// コンストラクタ
         /// </summary>
         /// <param name="speed">変数名</param>
-        public DelayCommand(string speed) : this(new ReferenceVariable<int>(speed)) { }
+        public DelayCommand(string speed)
+        {
+            if (speed == "nowait")
+            {
+                Speed = new ReferenceVariable<int>(0);
+            }
+            else
+            {
+                Speed = new ReferenceVariable<int>(speed);
+            }
+        }
     }
 }
