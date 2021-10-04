@@ -8,6 +8,11 @@ namespace Tsumugi.Unity
 {
     public class CommandExecutor : ICommandExecutor
     {
+        /// <summary>
+        ///  文字送り速度初期値
+        /// </summary>
+        private static readonly float DefaultDelaySpeed = 0.01f;
+
         public void PrintText(string text)
         {
             _activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペースに置き換える
@@ -50,17 +55,46 @@ namespace Tsumugi.Unity
         public void Quake(int millisec, int powerH, int powerV)
         {
             float time = 0;
-            var defaultPosition = new Vector2(_textComponent.rectTransform.anchoredPosition.x, _textComponent.rectTransform.anchoredPosition.y);
+            float seconds = millisec / 1000.0f;
+
+            var defaultTextPosition = new Vector2(_textComponent.rectTransform.anchoredPosition.x, _textComponent.rectTransform.anchoredPosition.y);
+
+            var defaultTextWindowPosition = _messageWindow == null ? Vector2.zero : _messageWindow.GetComponent<RectTransform>().anchoredPosition;
+            var defaultNamePosition = _nameTextComponent == null ? Vector2.zero : _nameTextComponent.GetComponent<RectTransform>().anchoredPosition;
+            var defaultNameWindowPosition = _nameWindow == null ? Vector2.zero : _nameWindow.GetComponent<RectTransform>().anchoredPosition;
+
             _elementUpdater.Add(
                 new Func<float, bool>((float deltaTime) =>
                 {
-                    if ((time += deltaTime) < millisec)
+                    if ((time += deltaTime) < seconds)
                     {
-                        _textComponent.rectTransform.anchoredPosition = new Vector2(
-                            defaultPosition.x + 10, defaultPosition.y + 10);
+                        var ns = 10.0f;
+                        var nc = 2.0f;
+
+                        var t = Time.time * ns;
+                        var nx = Mathf.PerlinNoise(t, t + 5.0f) * (powerH * nc);
+                        var ny = Mathf.PerlinNoise(t + 10.0f, t + 15.0f) * (powerV * nc);
+
+                        nx = nx * 0.5f;
+                        ny = ny * 0.5f;
+
+                        if (UnityEngine.Random.Range(0, 2) > 0) nx = nx * -1;
+                        if (UnityEngine.Random.Range(0, 2) > 0) ny = ny * -1;
+
+                        _textComponent.rectTransform.anchoredPosition = new Vector2(defaultTextPosition.x + nx, defaultTextPosition.y + ny);
+
+                        if (_messageWindow != null) _messageWindow.GetComponent<RectTransform>().anchoredPosition = new Vector2(defaultTextWindowPosition.x + nx, defaultTextWindowPosition.y + ny);
+                        if (_nameTextComponent != null) _nameTextComponent.GetComponent<RectTransform>().anchoredPosition = new Vector2(defaultNamePosition.x + nx, defaultNamePosition.y + ny);
+                        if (_nameWindow != null) _nameWindow.GetComponent<RectTransform>().anchoredPosition = new Vector2(defaultNameWindowPosition.x + nx, defaultNameWindowPosition.y + ny);
+
                         return true;
                     }
-                    _textComponent.rectTransform.anchoredPosition = defaultPosition;
+
+                    _textComponent.rectTransform.anchoredPosition = defaultTextPosition;
+                    if (_messageWindow != null) _messageWindow.GetComponent<RectTransform>().anchoredPosition = defaultTextWindowPosition;
+                    if (_nameTextComponent != null) _nameTextComponent.GetComponent<RectTransform>().anchoredPosition = defaultNamePosition;
+                    if (_nameWindow != null) _nameWindow.GetComponent<RectTransform>().anchoredPosition = defaultNameWindowPosition;
+
                     return false;
                 })
             );
@@ -87,10 +121,45 @@ namespace Tsumugi.Unity
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="text"></param>
-        public CommandExecutor(UnityEngine.UI.Text textComponent)
+        public class SetupParameter
         {
-            _textComponent = textComponent;
+            /// <summary>
+            /// スクリプト内容を表示するテキストコンポーネント（必須）
+            /// </summary>
+            public UnityEngine.UI.Text TextComponent { get; set; }
+
+            /// <summary>
+            /// 名前を表示するテキストコンポーネント（任意）
+            /// </summary>
+            public UnityEngine.UI.Text NameTextComponent { get; set; }
+
+            /// <summary>
+            /// メッセージウィンドウオブジェクト（任意）
+            /// </summary>
+            public GameObject MessageWindow { get; set; }
+
+            /// <summary>
+            /// 名前ウィンドウオブジェクト（任意）
+            /// </summary>
+            public GameObject NameWindow { get; set; }
+
+            /// <summary>
+            /// 次のページを示す画像/オブジェクト（任意）
+            /// </summary>
+            public GameObject NextPageSymbol { get; set; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        public CommandExecutor(SetupParameter param)
+        {
+            _textComponent = param.TextComponent;
+            _nameTextComponent = param.NameTextComponent;
+            _messageWindow = param.MessageWindow;
+            _nameWindow = param.NameWindow;
+            _nextPageSymbol = param.NextPageSymbol;
             _textComponent.text = string.Empty;
 
             _stateMachine = new StateMachine<CommandExecutor>(this);
@@ -102,7 +171,8 @@ namespace Tsumugi.Unity
             _stateMachine.SetStartState<PrintingState>();
             _stateMachine.Update();
 
-            _delayTime = 0.01f;
+            _delayTime = DefaultDelaySpeed;
+            _nextPageSymbol?.SetActive(false);
 
             _elementUpdater = new List<Func<float, bool>>();
         }
@@ -146,7 +216,10 @@ namespace Tsumugi.Unity
 
             protected internal override void Update()
             {
-                if (_time > Context._delayTime)
+                // delayTime が 0 の場合は待ち時間なしで表示するものとしておく
+                bool noWait = Context._delayTime == 0;
+
+                if (!noWait && _time > Context._delayTime)
                 {
                     _time = 0;
 
@@ -159,7 +232,7 @@ namespace Tsumugi.Unity
                 }
                 _time += Time.deltaTime;
 
-                if (Context.InputAnyKeys())
+                if (Context.InputAnyKeys() || noWait)
                 {
                     int pass = _index;
                     while(!TextExtension.IsOverflowingVerticle(Context._textComponent))
@@ -206,6 +279,11 @@ namespace Tsumugi.Unity
         /// </summary>
         private class WaitKayState : StateMachine<CommandExecutor>.State
         {
+            protected internal override void Enter()
+            {
+                Context._nextPageSymbol?.SetActive(true);
+            }
+
             protected internal override void Update()
             {
                 if (Context.InputAnyKeys())
@@ -215,6 +293,11 @@ namespace Tsumugi.Unity
 
                     Context._textComponent.text = string.Empty;
                 }
+            }
+
+            protected internal override void Exit()
+            {
+                Context._nextPageSymbol?.SetActive(false);
             }
         }
 
@@ -302,6 +385,26 @@ namespace Tsumugi.Unity
         /// テキストを表示するコンポーネント
         /// </summary>
         private UnityEngine.UI.Text _textComponent;
+
+        /// <summary>
+        /// 名前を表示するテキストコンポーネント
+        /// </summary>
+        public UnityEngine.UI.Text _nameTextComponent;
+
+        /// <summary>
+        /// メッセージウィンドウオブジェクト
+        /// </summary>
+        public GameObject _messageWindow;
+
+        /// <summary>
+        /// 名前ウィンドウオブジェクト
+        /// </summary>
+        public GameObject _nameWindow;
+
+        /// <summary>
+        /// 次のページに進めることを示す画像/オブジェクト
+        /// </summary>
+        private GameObject _nextPageSymbol;
 
         /// <summary>
         /// ステートマシン

@@ -7,18 +7,45 @@ using UnityEngine.UI;
 public class ScriptManager : MonoBehaviour
 {
     /// <summary>
-    /// テキストコンポーネント
+    /// テキストコンポーネント [Require]
     /// </summary>
     public Text Text;
+
+    /// <summary>
+    /// 名前用テキストコンポーネント [Option]
+    /// </summary>
+    public Text NameText;
+
+    /// <summary>
+    /// メッセージウィンドウ [Option]
+    /// </summary>
+    public GameObject MessageWindow;
+
+    /// <summary>
+    /// 名前ウィンドウ [Option]
+    /// </summary>
+    public GameObject NameWindow;
+
+    /// <summary>
+    /// ページ送りを示す画像/オブジェクト [Option]
+    /// </summary>
+    public GameObject NextPageSymbol;
 
     // Start is called before the first frame update
     void Start()
     {
-        _commandExecutor = new Tsumugi.Unity.CommandExecutor(Text);
+        _commandExecutor = new Tsumugi.Unity.CommandExecutor(new Tsumugi.Unity.CommandExecutor.SetupParameter()
+        {
+            TextComponent = Text,
+            NameTextComponent = NameText,
+            MessageWindow = MessageWindow,
+            NameWindow = NameWindow,
+            NextPageSymbol = NextPageSymbol
+        });
 
         var script =
-        "あ[wait time=1000]い[wait time=1000]つ[wait time=1000]は十[r]一月まあ[l]その関係院というのの中にしでう。" +
-        "どうも半分を話児はとうとうその力説たたらまでを解らてっうをは唱道云ったませて、元々にはするましななかった。" +
+        "あ[wait time=1000]いつは十[r]一月まあ[l]その[quake time=2000]関係院というのの中にしでう。" +
+        "どうも半分を話児はとうとう[delay speed=0]その力説たたらまでを解らてっうをは唱道云ったませて、元々にはするましななかった。" +
         "敵から願いたのはどうも時間をもちませだた。" +
         "はたして大森さんに説明憚また説明をしたずるずるべったりその機会それか公言をに対して不品評でんますませて、" +
         "この昨日も私か個人上流に云いて、岡田さんののに世の中の私にむしろ" +

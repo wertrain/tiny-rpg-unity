@@ -242,8 +242,8 @@ namespace Tsumugi.Text.Parsing
                         return new Commanding.Commands.QuakeCommand()
                         {
                             Time = ParseAttributeValueOrVariable<int>("time", tag),
-                            PowerH = ParseAttributeValueOrVariable<int>("hmax", tag),
-                            PowerV = ParseAttributeValueOrVariable<int>("vmax", tag),
+                            PowerH = ParseAttributeValueOrVariable<int>("hmax", tag, 1),
+                            PowerV = ParseAttributeValueOrVariable<int>("vmax", tag, 1),
                         };
                     }
 
