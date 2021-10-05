@@ -52,9 +52,21 @@
         void Quake(int millisec, int powerH, int powerV);
 
         /// <summary>
+        /// 画面を揺らし終了待ち
+        /// </summary>
+        /// <param name="canSkip"></param>
+        void WaitQuake(bool canSkip);
+
+        /// <summary>
         /// 文字送り速度
         /// </summary>
         /// <param name="speed"></param>
         void Delay(int speed);
+
+        /// <summary>
+        /// 名前を設定
+        /// </summary>
+        /// <param name="text"></param>
+        void Name(string text);
     }
 }

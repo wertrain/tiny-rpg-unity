@@ -93,11 +93,21 @@ namespace Tsumugi.Text.Parsing
         /// 画面を揺らす
         /// </summary>
         public const string Quake = "quake";
+        
+        /// <summary>
+        /// 画面の揺らし終了待ち
+        /// </summary>
+        public const string WaitQuake = "wq";
 
         /// <summary>
         /// 文字列速度を設定
         /// </summary>
         public const string Delay = "delay";
+
+        /// <summary>
+        /// 名前を表示
+        /// </summary>
+        public const string Name = "name";
     }
 
     /// <summary>
@@ -247,8 +257,14 @@ namespace Tsumugi.Text.Parsing
                         };
                     }
 
+                case TagName.WaitQuake:
+                    return new Commanding.Commands.WaitQuakeCommand(GetAttributeValueOrDefault("canskip", tag, false));
+
                 case TagName.Delay:
                     return new Commanding.Commands.DelayCommand(ParseAttributeValueOrVariable<int>("speed", tag));
+
+                case TagName.Name:
+                    return new Commanding.Commands.NameCommand(ParseAttributeValueOrVariable<string>("text", tag));
             }
 
             return null;

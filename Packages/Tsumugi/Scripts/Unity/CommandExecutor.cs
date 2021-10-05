@@ -64,7 +64,7 @@ namespace Tsumugi.Unity
             var defaultNameWindowPosition = _nameWindow == null ? Vector2.zero : _nameWindow.GetComponent<RectTransform>().anchoredPosition;
 
             _elementUpdater.Add(
-                new Func<float, bool>((float deltaTime) =>
+                ("Quake", new Func<float, bool>((float deltaTime) =>
                 {
                     if ((time += deltaTime) < seconds)
                     {
@@ -96,8 +96,13 @@ namespace Tsumugi.Unity
                     if (_nameWindow != null) _nameWindow.GetComponent<RectTransform>().anchoredPosition = defaultNameWindowPosition;
 
                     return false;
-                })
+                }))
             );
+        }
+
+        public void WaitQuake(bool canSkip)
+        {
+            _stateMachine.SendEvent((int)StateEventId.WaitQuake);
         }
 
         public void Delay(int speed)
@@ -105,11 +110,20 @@ namespace Tsumugi.Unity
             _delayTime = speed / 1000.0f;
         }
 
+        public void Name(string text)
+        {
+            if (_nameTextComponent != null)
+            {
+                _nameTextComponent.text = text;
+            }
+            _nameWindow?.SetActive(!string.IsNullOrEmpty(text));
+        }
+
         public void Update(float deltaTime)
         {
             foreach (var updater in _elementUpdater.ToArray())
             {
-                if (!updater(deltaTime))
+                if (!updater.Item2(deltaTime))
                 {
                     _elementUpdater.Remove(updater);
                 }
@@ -160,21 +174,25 @@ namespace Tsumugi.Unity
             _messageWindow = param.MessageWindow;
             _nameWindow = param.NameWindow;
             _nextPageSymbol = param.NextPageSymbol;
+
             _textComponent.text = string.Empty;
+            if (_nameTextComponent != null) _nameTextComponent.text = string.Empty;
 
             _stateMachine = new StateMachine<CommandExecutor>(this);
             _stateMachine.AddAnyTransition<PrintingState>((int)StateEventId.Printing);
             _stateMachine.AddAnyTransition<WaitKayState>((int)StateEventId.WaitKay);
             _stateMachine.AddAnyTransition<WaitTimeState>((int)StateEventId.WaitTime);
+            _stateMachine.AddAnyTransition<WaitQuakeState>((int)StateEventId.WaitQuake);
             _stateMachine.AddAnyTransition<NewlineState>((int)StateEventId.Newline);
             _stateMachine.AddAnyTransition<ProcessedState>((int)StateEventId.Processed);
             _stateMachine.SetStartState<PrintingState>();
             _stateMachine.Update();
 
             _delayTime = DefaultDelaySpeed;
+            _nameWindow?.SetActive(false);
             _nextPageSymbol?.SetActive(false);
 
-            _elementUpdater = new List<Func<float, bool>>();
+            _elementUpdater = new List<(string, Func<float, bool>)>();
         }
 
         /// <summary>
@@ -326,6 +344,22 @@ namespace Tsumugi.Unity
         }
 
         /// <summary>
+        /// WaitQuake ステート
+        /// </summary>
+        private class WaitQuakeState : StateMachine<CommandExecutor>.State
+        {
+            protected internal override void Update()
+            {
+                foreach (var (name, updater) in Context._elementUpdater.ToArray())
+                {
+                    if (name == "Quake") return;
+                }
+
+                Context._stateMachine.SendEvent((int)StateEventId.Processed);
+            }
+        }
+
+        /// <summary>
         /// Newline ステート
         /// </summary>
         private class NewlineState : StateMachine<CommandExecutor>.State
@@ -356,6 +390,7 @@ namespace Tsumugi.Unity
             Printing,
             WaitKay,
             WaitTime,
+            WaitQuake,
             Newline,
             Processed,
             Max
@@ -414,7 +449,7 @@ namespace Tsumugi.Unity
         /// <summary>
         /// 更新処理
         /// </summary>
-        private List<Func<float, bool>> _elementUpdater;
+        private List<(string,Func<float, bool>)> _elementUpdater;
     }
 
     /// <summary>

@@ -322,8 +322,16 @@ namespace Tsumugi
                             cmd.PowerV.GetValueOrDefault());
                         break;
 
+                    case Text.Commanding.Commands.WaitQuakeCommand cmd:
+                        executor.WaitQuake(cmd.CanSkip);
+                        break;
+
                     case Text.Commanding.Commands.DelayCommand cmd:
                         executor.Delay(cmd.Speed.GetValueOrDefault());
+                        break;
+
+                    case Text.Commanding.Commands.NameCommand cmd:
+                        executor.Name(cmd.Text.GetValueOrDefault());
                         break;
                 }
             }
