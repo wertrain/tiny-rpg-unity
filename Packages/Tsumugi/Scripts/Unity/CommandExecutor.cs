@@ -64,7 +64,7 @@ namespace Tsumugi.Unity
             var defaultNameWindowPosition = _nameWindow == null ? Vector2.zero : _nameWindow.GetComponent<RectTransform>().anchoredPosition;
 
             _elementUpdater.Add(
-                ("Quake", new Func<float, bool>((float deltaTime) =>
+                (UpdaterTypes.Quake, new Func<float, bool>((float deltaTime) =>
                 {
                     if ((time += deltaTime) < seconds)
                     {
@@ -102,6 +102,7 @@ namespace Tsumugi.Unity
 
         public void WaitQuake(bool canSkip)
         {
+            _enableCancel = canSkip;
             _stateMachine.SendEvent((int)StateEventId.WaitQuake);
         }
 
@@ -192,7 +193,7 @@ namespace Tsumugi.Unity
             _nameWindow?.SetActive(false);
             _nextPageSymbol?.SetActive(false);
 
-            _elementUpdater = new List<(string, Func<float, bool>)>();
+            _elementUpdater = new List<(UpdaterTypes, Func<float, bool>)>();
         }
 
         /// <summary>
@@ -350,9 +351,20 @@ namespace Tsumugi.Unity
         {
             protected internal override void Update()
             {
-                foreach (var (name, updater) in Context._elementUpdater.ToArray())
+                // スキップ可能の時は、スキップ判定を行う
+                if (Context._enableCancel && Context.InputAnyKeys())
                 {
-                    if (name == "Quake") return;
+                    Context._elementUpdater.RemoveAll((updater) =>
+                    {
+                        return updater.Item1 == UpdaterTypes.Quake;
+                    });
+                }
+                else
+                {
+                    foreach (var (name, updater) in Context._elementUpdater)
+                    {
+                        if (name == UpdaterTypes.Quake) return;
+                    }
                 }
 
                 Context._stateMachine.SendEvent((int)StateEventId.Processed);
@@ -417,6 +429,11 @@ namespace Tsumugi.Unity
         private float _delayTime;
 
         /// <summary>
+        /// キャンセル可能か
+        /// </summary>
+        private bool _enableCancel;
+
+        /// <summary>
         /// テキストを表示するコンポーネント
         /// </summary>
         private UnityEngine.UI.Text _textComponent;
@@ -447,9 +464,17 @@ namespace Tsumugi.Unity
         private StateMachine<CommandExecutor> _stateMachine;
 
         /// <summary>
+        /// 更新処理のタイプ
+        /// </summary>
+        private enum UpdaterTypes : int
+        {
+            Quake,
+        }
+
+        /// <summary>
         /// 更新処理
         /// </summary>
-        private List<(string,Func<float, bool>)> _elementUpdater;
+        private List<(UpdaterTypes, Func<float, bool>)> _elementUpdater;
     }
 
     /// <summary>
