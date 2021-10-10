@@ -111,13 +111,31 @@ namespace Tsumugi.Unity
             _delayTime = speed / 1000.0f;
         }
 
-        public void Name(string text)
+        public void SetName(string text)
         {
             if (_nameTextComponent != null)
             {
                 _nameTextComponent.text = text;
             }
             _nameWindow?.SetActive(!string.IsNullOrEmpty(text));
+        }
+
+        public void SetImage(Image image)
+        {
+            if (_imageLayer.Count <= image.Layer) return;
+
+            var color = Color.white;
+            ColorUtility.TryParseHtmlString(image.Color, out color);
+
+            var asset = AssetBundle.LoadFromFile(image.Storage);
+            _imageLayer[image.Layer].sprite = asset.LoadAsset<Sprite>(System.IO.Path.GetFileName(image.Storage));
+            _imageLayer[image.Layer].color = color;
+
+            if (!_allAssetBundles.ContainsKey(image.Storage))
+            {
+                _allAssetBundles.Add(image.Storage, asset);
+            }
+
         }
 
         public void Update(float deltaTime)
@@ -162,6 +180,11 @@ namespace Tsumugi.Unity
             /// 次のページを示す画像/オブジェクト（任意）
             /// </summary>
             public GameObject NextPageSymbol { get; set; }
+
+            /// <summary>
+            /// 画像レイヤー（任意）
+            /// </summary>
+            public List<UnityEngine.UI.Image> ImageLayer;
         }
 
         /// <summary>
@@ -175,6 +198,7 @@ namespace Tsumugi.Unity
             _messageWindow = param.MessageWindow;
             _nameWindow = param.NameWindow;
             _nextPageSymbol = param.NextPageSymbol;
+            _imageLayer = param.ImageLayer;
 
             _textComponent.text = string.Empty;
             if (_nameTextComponent != null) _nameTextComponent.text = string.Empty;
@@ -194,6 +218,7 @@ namespace Tsumugi.Unity
             _nextPageSymbol?.SetActive(false);
 
             _elementUpdater = new List<(UpdaterTypes, Func<float, bool>)>();
+            _allAssetBundles = new Dictionary<string, AssetBundle>();
         }
 
         /// <summary>
@@ -459,9 +484,19 @@ namespace Tsumugi.Unity
         private GameObject _nextPageSymbol;
 
         /// <summary>
+        /// イメージレイヤー
+        /// </summary>
+        private List<UnityEngine.UI.Image> _imageLayer;
+
+        /// <summary>
         /// ステートマシン
         /// </summary>
         private StateMachine<CommandExecutor> _stateMachine;
+
+        /// <summary>
+        /// ロードしたすべてのアセットバンドル
+        /// </summary>
+        private Dictionary<string, AssetBundle> _allAssetBundles;
 
         /// <summary>
         /// 更新処理のタイプ

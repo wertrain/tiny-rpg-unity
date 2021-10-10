@@ -108,6 +108,11 @@ namespace Tsumugi.Text.Parsing
         /// 名前を表示
         /// </summary>
         public const string Name = "name";
+
+        /// <summary>
+        /// 画像を表示
+        /// </summary>
+        public const string Image = "image";
     }
 
     /// <summary>
@@ -265,6 +270,12 @@ namespace Tsumugi.Text.Parsing
 
                 case TagName.Name:
                     return new Commanding.Commands.NameCommand(ParseAttributeValueOrVariable<string>("text", tag));
+
+                case TagName.Image:
+                    return new Commanding.Commands.ImageCommand()
+                    {
+
+                    };
             }
 
             return null;
@@ -365,7 +376,6 @@ namespace Tsumugi.Text.Parsing
                 return new Commanding.ReferenceVariable<T>(attr.Value);
             }
         }
-
 
         /// <summary>
         /// コマンドファクトリの例外

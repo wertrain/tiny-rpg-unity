@@ -67,6 +67,12 @@
         /// 名前を設定
         /// </summary>
         /// <param name="text"></param>
-        void Name(string text);
+        void SetName(string text);
+
+        /// <summary>
+        /// 画像
+        /// </summary>
+        /// <param name="image"></param>
+        void SetImage(Image image);
     }
 }

@@ -45,7 +45,8 @@ public class ScriptManager : MonoBehaviour
             NameTextComponent = NameText,
             MessageWindow = MessageWindow,
             NameWindow = NameWindow,
-            NextPageSymbol = NextPageSymbol
+            NextPageSymbol = NextPageSymbol,
+            ImageLayer = ImageLayer
         });
 
         var script =

@@ -331,7 +331,13 @@ namespace Tsumugi
                         break;
 
                     case Text.Commanding.Commands.NameCommand cmd:
-                        executor.Name(cmd.Text.GetValueOrDefault());
+                        executor.SetName(cmd.Text.GetValueOrDefault());
+                        break;
+
+                   case Text.Commanding.Commands.ImageCommand cmd:
+                        executor.SetImage(new Text.Executing.Image()
+                        {
+                        });
                         break;
                 }
             }

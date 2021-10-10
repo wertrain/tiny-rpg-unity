@@ -69,4 +69,35 @@ namespace Tsumugi.Text.Executing
         /// </summary>
         public string FontFilePath { get; set; }
     }
+
+    /// <summary>
+    /// 画像
+    /// </summary>
+    public class Image
+    {
+        /// <summary>
+        /// ファイルパス
+        /// </summary>
+        public string Storage { get; set; }
+
+        /// <summary>
+        /// レイヤー番号
+        /// </summary>
+        public int Layer { get; set; }
+
+        /// <summary>
+        /// 表示フラグ
+        /// </summary>
+        public bool Visible { get; set; }
+
+        /// <summary>
+        /// 色（#RRGGBB 形式）
+        /// </summary>
+        public string Color { get; set; }
+
+        /// <summary>
+        /// 不透明度
+        /// </summary>
+        public uint Opacity { get; set; }
+    }
 }
