@@ -337,6 +337,11 @@ namespace Tsumugi
                    case Text.Commanding.Commands.ImageCommand cmd:
                         executor.SetImage(new Text.Executing.Image()
                         {
+                            Color = cmd.Color.GetValueOrDefault(),
+                            Layer = cmd.Layer.GetValueOrDefault(),
+                            Storage = cmd.Storage.GetValueOrDefault(),
+                            Visible = cmd.Visible.GetValueOrDefault(),
+                            Opacity = cmd.Opacity.GetValueOrDefault()
                         });
                         break;
                 }

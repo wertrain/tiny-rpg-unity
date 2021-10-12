@@ -274,7 +274,11 @@ namespace Tsumugi.Text.Parsing
                 case TagName.Image:
                     return new Commanding.Commands.ImageCommand()
                     {
-
+                        Color = ParseAttributeValueOrVariable<string>("color", tag, "0xffffff"),
+                        Layer = ParseAttributeValueOrVariable<int>("color", tag),
+                        Storage = ParseAttributeValueOrVariable<string>("storage", tag),
+                        Visible = ParseAttributeValueOrVariable<bool>("visible", tag, true),
+                        Opacity = ParseAttributeValueOrVariable<uint>("color", tag, 255),
                     };
             }
 
