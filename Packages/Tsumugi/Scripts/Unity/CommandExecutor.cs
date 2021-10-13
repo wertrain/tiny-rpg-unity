@@ -127,14 +127,13 @@ namespace Tsumugi.Unity
             var color = Color.white;
             ColorUtility.TryParseHtmlString(image.Color, out color);
 
-            var asset = AssetBundle.LoadFromFile(image.Storage);
-            _imageLayer[image.Layer].sprite = asset.LoadAsset<Sprite>(System.IO.Path.GetFileName(image.Storage));
+            _imageLayer[image.Layer].sprite = Resources.Load<Sprite>(image.Storage);
             _imageLayer[image.Layer].color = color;
 
-            if (!_allAssetBundles.ContainsKey(image.Storage))
-            {
-                _allAssetBundles.Add(image.Storage, asset);
-            }
+            //if (!_allAssetBundles.ContainsKey(image.Storage))
+            //{
+            //    _allAssetBundles.Add(image.Storage, asset);
+            //}
 
         }
 

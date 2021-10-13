@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: TsumugiResouces
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
+  m_GroupName: TsugumiResouces
   m_Data:
     m_SerializedData: []
-  m_GUID: 110c0b9ae10a9e04498bac3eb53ad2c1
+  m_GUID: 2283c215500ef6d4d84656f726eb87eb
   m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: c893993080390e14ea3360ccd7547739, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 6286fb2966861c04db00cbda394c829d, type: 2}
-    - {fileID: 11400000, guid: 2ee2585a97203b64aa189fdeefd17284, type: 2}
+    - {fileID: 11400000, guid: c5f7eb65818598c4a9ca1435913ca01c, type: 2}
+    - {fileID: 11400000, guid: ec17d5b8eb5dc3648b5faa07dc56211f, type: 2}

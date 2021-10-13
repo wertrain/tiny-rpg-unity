@@ -51,7 +51,7 @@ public class ScriptManager : MonoBehaviour
 
         var script =
         "あ[wait time=1000]いつは十[r]一月[name text=こういう]まあ[l]その[quake time=8000]関[wq canskip=true]係院[name]というのの中にしでう。" +
-        "どうも[image storage=Assets/Data/Face/Yozo.png]半分を話児はとうとう[delay speed=0]その力説たたらまでを解らてっうをは唱道云ったませて、元々にはするましななかった。" +
+        "どうも[image storage=Assets/Resources/Characters/Faces/YozoFace]半分を話児はとうとう[delay speed=0]その力説たたらまでを解らてっうをは唱道云ったませて、元々にはするましななかった。" +
         "敵から願いたのはどうも時間をもちませだた。" +
         "はたして大森さんに説明憚また説明をしたずるずるべったりその機会それか公言をに対して不品評でんますませて、" +
         "この昨日も私か個人上流に云いて、岡田さんののに世の中の私にむしろ" +
