@@ -128,6 +128,7 @@ namespace Tsumugi.Unity
             ColorUtility.TryParseHtmlString(image.Color, out color);
 
             _imageLayer[image.Layer].sprite = Resources.Load<Sprite>(image.Storage);
+            Debug.Log(_imageLayer[image.Layer].sprite);
             _imageLayer[image.Layer].color = color;
 
             //if (!_allAssetBundles.ContainsKey(image.Storage))
