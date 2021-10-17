@@ -12,7 +12,7 @@ namespace Tsumugi.Text.Commanding.Commands
         /// <summary>
         /// 文字サイズ
         /// </summary>
-        public int Size { get; set; }
+        public ReferenceVariable<int> Size { get; set; }
 
         /// <summary>
         /// フォント名

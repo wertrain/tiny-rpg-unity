@@ -284,7 +284,7 @@ namespace Tsumugi
                     case Text.Commanding.Commands.DefaultFontCommand cmd:
                         executor.SetDefaultFont(new Text.Executing.Font
                         {
-                            Size = cmd.Size,
+                            Size = cmd.Size.GetValueOrDefault(),
                             Face = cmd.Face,
                             Color = cmd.Color,
                             RubySize = cmd.RubySize,
@@ -301,7 +301,7 @@ namespace Tsumugi
                     case Text.Commanding.Commands.FontCommand cmd:
                         executor.SetFont(new Text.Executing.Font
                         {
-                            Size = cmd.Size,
+                            Size = cmd.Size.GetValueOrDefault(),
                             Face = cmd.Face,
                             Color = cmd.Color,
                             RubySize = cmd.RubySize,

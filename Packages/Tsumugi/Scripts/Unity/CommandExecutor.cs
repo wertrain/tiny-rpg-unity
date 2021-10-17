@@ -127,8 +127,10 @@ namespace Tsumugi.Unity
             var color = Color.white;
             ColorUtility.TryParseHtmlString(image.Color, out color);
 
-            _imageLayer[image.Layer].sprite = Resources.Load<Sprite>(image.Storage);
-            Debug.Log(_imageLayer[image.Layer].sprite);
+            var sprite = Resources.Load<Sprite>(image.Storage);
+            _imageLayer[image.Layer].sprite = sprite;
+            _imageLayer[image.Layer].rectTransform.anchoredPosition = sprite.rect.position;
+            _imageLayer[image.Layer].rectTransform.sizeDelta = sprite.rect.size;
             _imageLayer[image.Layer].color = color;
 
             //if (!_allAssetBundles.ContainsKey(image.Storage))

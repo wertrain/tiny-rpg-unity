@@ -113,6 +113,11 @@ namespace Tsumugi.Text.Parsing
         /// 画像を表示
         /// </summary>
         public const string Image = "image";
+
+        /// <summary>
+        /// デフォルトフォントに戻す
+        /// </summary>
+        public const string ResetFont = "resetfont";
     }
 
     /// <summary>
@@ -238,7 +243,7 @@ namespace Tsumugi.Text.Parsing
                     {
                         return new Commanding.Commands.FontCommand()
                         {
-                            Size = GetAttributeValueOrDefault("size", tag, 10),
+                            Size = ParseAttributeValueOrVariable<int>("size", tag),
                             Face = GetAttributeValueOrDefault("face", tag, "MS UI Gothic"),
                             Color = GetAttributeValueOrDefault<uint>("color", tag, 0x000000ff),
                             RubySize = GetAttributeValueOrDefault("rubysize", tag, 10),
@@ -274,11 +279,11 @@ namespace Tsumugi.Text.Parsing
                 case TagName.Image:
                     return new Commanding.Commands.ImageCommand()
                     {
-                        Color = ParseAttributeValueOrVariable<string>("color", tag, "0xffffff"),
-                        Layer = ParseAttributeValueOrVariable<int>("color", tag),
+                        Color = ParseAttributeValueOrVariable<string>("color", tag, "#ffffff"),
+                        Layer = ParseAttributeValueOrVariable<int>("layer", tag),
                         Storage = ParseAttributeValueOrVariable<string>("storage", tag),
                         Visible = ParseAttributeValueOrVariable<bool>("visible", tag, true),
-                        Opacity = ParseAttributeValueOrVariable<uint>("color", tag, 255),
+                        Opacity = ParseAttributeValueOrVariable<uint>("opacity", tag, 255),
                     };
             }
 
