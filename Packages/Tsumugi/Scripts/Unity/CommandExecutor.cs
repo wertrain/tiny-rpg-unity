@@ -254,6 +254,40 @@ namespace Tsumugi.Unity
         /// </summary>
         private class PrintingState : StateMachine<CommandExecutor>.State
         {
+            /// <summary>
+            /// テキストを切り分ける
+            /// </summary>
+            private class TextRipper
+            {
+                public TextRipper(string text)
+                {
+                    _text = text;
+                }
+
+                public bool Step()
+                {
+                    switch (_text[_index + 1])
+                    {
+                        case '<':
+                            break;
+                    }
+
+                    while (++_index > _text.Length)
+                    {
+
+
+                        return true;
+                    }
+                    return true;
+                }
+
+                private string _text;
+
+                private int _index;
+
+                private int _displayIndex;
+            }
+
             protected internal override void Enter()
             {
                 _index = 1;
