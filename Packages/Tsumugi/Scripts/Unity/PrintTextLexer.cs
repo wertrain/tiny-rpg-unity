@@ -7,7 +7,7 @@ using Tsumugi.Text.Commanding;
 
 namespace Tsumugi.Unity
 {
-    public class Lexer
+    public class PrintTextLexer
     {
         /// <summary>
         /// コントロール文字の定義
@@ -44,7 +44,7 @@ namespace Tsumugi.Unity
         /// コンストラクタ
         /// </summary>
         /// <param name="script"></param>
-        public Lexer(string script)
+        public PrintTextLexer(string script)
         {
             Reader = new Script.Lexing.LexingStringReader(script);
         }
@@ -168,36 +168,6 @@ namespace Tsumugi.Unity
             char c = char.MaxValue;
 
             while ((c = Reader.PeekChar()) != ControlCharacter.TagEnd)
-            {
-                // 改行または終端が先に見つかった場合は、不正なトークン
-                if (c == '\r' || c == '\n' || c == char.MaxValue)
-                {
-                    return CreateToken(Text.Lexing.TokenType.Illegal, c.ToString());
-                }
-                // 属性が見つかれば終了
-                else if (c == ControlCharacter.TagAttributeSeparator)
-                {
-                    break;
-                }
-                tag.Append(Reader.ReadChar());
-            }
-
-            Reader.Seek(-1, SeekOrigin.Current);
-
-            return CreateToken(Text.Lexing.TokenType.Tag, tag.ToString());
-        }
-
-        /// <summary>
-        /// タグの読み込み
-        /// </summary>
-        /// <returns></returns>
-        private Text.Lexing.Token ReadTagLine()
-        {
-            var tag = new StringBuilder();
-
-            char c = char.MaxValue;
-
-            while ((c = Reader.PeekChar()) != char.MaxValue)
             {
                 // 改行または終端が先に見つかった場合は、不正なトークン
                 if (c == '\r' || c == '\n' || c == char.MaxValue)
