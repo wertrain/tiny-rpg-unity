@@ -45,10 +45,27 @@ namespace Tsumugi.Unity
             var parser = new PrintTextParser(lexer);
 
             var tokens = parser.Parse();
+            _tokens.AddRange(tokens);
         }
 
         public string GetText(int index)
         {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var token in _tokens)
+            {
+                switch (token.Type)
+                {
+                    case Text.Lexing.TokenType.Text:
+
+                        break;
+
+                    case Text.Lexing.TokenType.Tag:
+
+                        break;
+                }
+            }
+
             return string.Empty;
         }
         private List<Text.Lexing.Token> _tokens;
