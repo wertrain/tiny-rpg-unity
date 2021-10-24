@@ -13,6 +13,7 @@ namespace Tsumugi.Unity
             /// </summary>
             public enum TagType
             {
+                Invalid,
                 Bold,
                 Italic,
                 Size,
@@ -52,22 +53,70 @@ namespace Tsumugi.Unity
         {
             StringBuilder stringBuilder = new StringBuilder();
 
+            int left = index;
             foreach (var token in _tokens)
             {
                 switch (token.Type)
                 {
                     case Text.Lexing.TokenType.Text:
-
+                        if (token.Literal.Length < left)
+                        {
+                            stringBuilder.Append(token.Literal);
+                        }
+                        else
+                        {
+                            stringBuilder.Append(token.Literal.Substring(0, left));
+                        }
+                        left -= token.Literal.Length;
                         break;
 
                     case Text.Lexing.TokenType.Tag:
+                        if (GetTag(token, out var tag))
+                        {
+                            _activeTags.Add(new UnityRichTextTag()
+                            {
+                                Tag = tag
+                            });
+                        }
+                        break;
 
+                    case Text.Lexing.TokenType.TagEnd:
+                        if (GetTag(token, out var endTag))
+                        {
+                            for (int i = _activeTags.Count - 1; i >= 0; i--)
+                            {
+                                if (_activeTags[i].Tag == endTag)
+                                {
+                                    _activeTags.RemoveAt(i);
+                                    break;
+                                }
+                            }
+                        }
                         break;
                 }
+
+
+                if (left <= 0) break;
             }
 
             return string.Empty;
         }
+
+        private bool GetTag(Text.Lexing.Token token, out UnityRichTextTag.TagType tag)
+        {
+            switch (token.Literal.ToLower())
+            {
+                case "size":
+                    tag = UnityRichTextTag.TagType.Size;
+                    break;
+                default:
+                    tag = UnityRichTextTag.TagType.Invalid;
+                    return false;
+            }
+
+            return true;
+        }
+
         private List<Text.Lexing.Token> _tokens;
 
         private List<UnityRichTextTag> _activeTags;
