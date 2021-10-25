@@ -87,7 +87,7 @@ namespace Tsumugi.Unity
                         break;
 
                     case ControlCharacter.Assignment:
-                        if (PrevToken?.Type != Text.Lexing.TokenType.TagAttributeName) goto default;
+                        if (PrevToken?.Type != Text.Lexing.TokenType.Tag) goto default;
                         Reader.ReadChar();
                         token = ReadTagAttributeValue();
                         break;
@@ -174,8 +174,8 @@ namespace Tsumugi.Unity
                 {
                     return CreateToken(Text.Lexing.TokenType.Illegal, c.ToString());
                 }
-                // 属性が見つかれば終了
-                else if (c == ControlCharacter.TagAttributeSeparator)
+                // = が見つかれば終了
+                else if (c == ControlCharacter.Assignment)
                 {
                     break;
                 }
