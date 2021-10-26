@@ -15,7 +15,8 @@ namespace Tsumugi.Unity
 
         public void PrintText(string text)
         {
-            _activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペースに置き換える
+            var activeText = text.Replace(" ", "\u00A0"); // ノーブレークスペースに置き換える
+            _textProcessor.AddText(activeText);
 
             _stateMachine.SendEvent((int)StateEventId.Printing);
         }
@@ -215,6 +216,8 @@ namespace Tsumugi.Unity
             _stateMachine.SetStartState<PrintingState>();
             _stateMachine.Update();
 
+            _textProcessor = new PrintTextProcessor();
+
             _delayTime = DefaultDelaySpeed;
             _nameWindow?.SetActive(false);
             _nextPageSymbol?.SetActive(false);
@@ -254,43 +257,9 @@ namespace Tsumugi.Unity
         /// </summary>
         private class PrintingState : StateMachine<CommandExecutor>.State
         {
-            /// <summary>
-            /// テキストを切り分ける
-            /// </summary>
-            private class TextRipper
-            {
-                public TextRipper(string text)
-                {
-                    _text = text;
-                }
-
-                public bool Step()
-                {
-                    switch (_text[_index + 1])
-                    {
-                        case '<':
-                            break;
-                    }
-
-                    while (++_index > _text.Length)
-                    {
-
-
-                        return true;
-                    }
-                    return true;
-                }
-
-                private string _text;
-
-                private int _index;
-
-                private int _displayIndex;
-            }
-
             protected internal override void Enter()
             {
-                _index = 1;
+                _index = Context._activeTextIndex;
                 _text = Context._textComponent.text;
             }
 
@@ -303,9 +272,10 @@ namespace Tsumugi.Unity
                 {
                     _time = 0;
 
-                    if (++_index > Context._activeText.Length)
+                    if (++_index > Context._textProcessor.TextLength)
                     {
-                        Context._activeText = string.Empty;
+                        Context._textProcessor.ClearText();
+                        Context._activeTextIndex = 0;
                         Context._stateMachine.SendEvent((int)StateEventId.Processed);
                         return;
                     }
@@ -317,22 +287,22 @@ namespace Tsumugi.Unity
                     int pass = _index;
                     while(!TextExtension.IsOverflowingVerticle(Context._textComponent))
                     {
-                        Context._textComponent.text = _text + Context._activeText.Substring(0, pass);
+                        Context._textComponent.text = _text + Context._textProcessor.GetText(pass);
 
-                        if (++pass >= Context._activeText.Length)
+                        if (++pass >= Context._textProcessor.TextLength)
                             break;
                     }
                     var nextIndex = pass - 1;
-                    Context._activeText = Context._activeText.Substring(nextIndex, Context._activeText.Length - nextIndex);
+                    Context._activeTextIndex = Context._textProcessor.TextLength - nextIndex;
                     Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
                 }
                 else
                 {
-                    Context._textComponent.text = _text + Context._activeText.Substring(0, _index);
+                    Context._textComponent.text = _text + Context._textProcessor.GetText(_index);
                     if (TextExtension.IsOverflowingVerticle(Context._textComponent))
                     {
                         var nextIndex = _index - 1;
-                        Context._activeText = Context._activeText.Substring(nextIndex, Context._activeText.Length - nextIndex);
+                        Context._activeTextIndex = Context._textProcessor.TextLength - nextIndex;
                         Context._stateMachine.SendEvent((int)StateEventId.WaitKay);
                     }
                 }
@@ -368,7 +338,7 @@ namespace Tsumugi.Unity
             {
                 if (Context.InputAnyKeys())
                 {
-                    Context._stateMachine.SendEvent(Context._activeText.Length == 0 ?
+                    Context._stateMachine.SendEvent(Context._activeTextIndex >= Context._textProcessor.TextLength ?
                         (int)StateEventId.Processed : (int)StateEventId.Printing);
 
                     Context._textComponent.text = string.Empty;
@@ -475,11 +445,6 @@ namespace Tsumugi.Unity
         delegate void ElementUpdater();
 
         /// <summary>
-        /// 表示処理中の文字列
-        /// </summary>
-        private string _activeText;
-
-        /// <summary>
         /// WaitTime ステートの待機時間を格納
         /// </summary>
         private float _waitTime;
@@ -523,6 +488,16 @@ namespace Tsumugi.Unity
         /// イメージレイヤー
         /// </summary>
         private List<UnityEngine.UI.Image> _imageLayer;
+
+        /// <summary>
+        /// テキストプロセッサー
+        /// </summary>
+        private PrintTextProcessor _textProcessor;
+
+        /// <summary>
+        /// 現在のテキストのインデックス
+        /// </summary>
+        private int _activeTextIndex;
 
         /// <summary>
         /// ステートマシン
