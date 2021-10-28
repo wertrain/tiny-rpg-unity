@@ -41,7 +41,8 @@ namespace Tsumugi.Unity
         }
 
         /// <summary>
-        /// 
+        /// テキストをクリアする
+        /// 未処理のタグはそのまま残留させる
         /// </summary>
         public void ClearText()
         {
@@ -50,6 +51,9 @@ namespace Tsumugi.Unity
             _tokens.Clear();
         }
 
+        /// <summary>
+        /// テキストとタグ情報をクリアする
+        /// </summary>
         public void Clear()
         {
             _unclosedTags.Clear();
@@ -130,7 +134,7 @@ namespace Tsumugi.Unity
             if (tagName[0] == '/')
             {
                 tagName = tagName.Substring(1);
-                if (GetTag(tagName, out var tag))
+                if (UnityRichTextTag.GetTag(tagName, out var tag))
                 {
                     for (int i = tags.Count - 1; i >= 0; i--)
                     {
@@ -145,7 +149,7 @@ namespace Tsumugi.Unity
             }
             else
             {
-                if (GetTag(token.Literal, out var tag))
+                if (UnityRichTextTag.GetTag(token.Literal, out var tag))
                 {
                     var textTag = new UnityRichTextTag(tag);
 
@@ -159,36 +163,6 @@ namespace Tsumugi.Unity
                     tags.Add(textTag);
                 }
             }
-        }
-
-        /// <summary>
-        /// タグ名から有効なタグを判定する
-        /// </summary>
-        /// <param name="tagName"></param>
-        /// <param name="tag"></param>
-        /// <returns></returns>
-        private bool GetTag(string tagName, out UnityRichTextTag.TagType tag)
-        {
-            switch (tagName.ToLower())
-            {
-                case "i":
-                    tag = UnityRichTextTag.TagType.Italic;
-                    break;
-                case "color":
-                    tag = UnityRichTextTag.TagType.Color;
-                    break;
-                case "b":
-                    tag = UnityRichTextTag.TagType.Bold;
-                    break;
-                case "size":
-                    tag = UnityRichTextTag.TagType.Size;
-                    break;
-                default:
-                    tag = UnityRichTextTag.TagType.Invalid;
-                    return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -294,6 +268,36 @@ namespace Tsumugi.Unity
                     case TagType.Size: stringBuilder.Append("</size>"); break;
                     case TagType.Color: stringBuilder.Append("</color>"); break;
                 }
+            }
+
+            /// <summary>
+            /// タグ名から有効なタグを判定する
+            /// </summary>
+            /// <param name="tagName"></param>
+            /// <param name="tag"></param>
+            /// <returns></returns>
+            public static bool GetTag(string tagName, out TagType tag)
+            {
+                switch (tagName.ToLower())
+                {
+                    case "i":
+                        tag = TagType.Italic;
+                        break;
+                    case "color":
+                        tag = TagType.Color;
+                        break;
+                    case "b":
+                        tag = TagType.Bold;
+                        break;
+                    case "size":
+                        tag = TagType.Size;
+                        break;
+                    default:
+                        tag = TagType.Invalid;
+                        return false;
+                }
+
+                return true;
             }
         }
     }
