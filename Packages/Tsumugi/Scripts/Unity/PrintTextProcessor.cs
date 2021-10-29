@@ -131,6 +131,7 @@ namespace Tsumugi.Unity
             var token = tokenNode.Value;
             var tagName = token.Literal.ToLower();
 
+            // 閉じタグの場合、保持しているタグのリストからそのタグを消去
             if (tagName[0] == '/')
             {
                 tagName = tagName.Substring(1);
@@ -147,6 +148,7 @@ namespace Tsumugi.Unity
                     }
                 }
             }
+            // 新しいタグの場合、タグのリストに保存する
             else
             {
                 if (UnityRichTextTag.GetTag(token.Literal, out var tag))
