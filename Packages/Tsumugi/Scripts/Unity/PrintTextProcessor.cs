@@ -105,17 +105,19 @@ namespace Tsumugi.Unity
                         break;
                 }
 
+
+                tokenNode = tokenNode.Next;
+
                 // 抜けるときはすべてのタグを閉じる
-                if (left <= 0)
+                if (left <= 0 || tokenNode == null)
                 {
-                    foreach (var tag in _activeTags)
+                    for (int i = _activeTags.Count - 1; i >= 0; i--)
                     {
+                        var tag = _activeTags[i];
                         tag.EndTag(stringBuilder);
                     }
                     break;
                 }
-
-                tokenNode = tokenNode.Next;
             }
 
             return stringBuilder.ToString();
