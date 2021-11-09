@@ -12,7 +12,28 @@ namespace Tsumugi.Text.Executing
         /// <summary>
         /// 文字サイズ
         /// </summary>
-        public int Size { get; set; }
+        public int Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                HasSize = true;
+                _size = value;
+            }
+        }
+
+        /// <summary>
+        /// 文字サイズ
+        /// </summary>
+        private int _size;
+
+        /// <summary>
+        /// 文字サイズの保持フラグ
+        /// </summary>
+        public bool HasSize { get; private set; }
 
         /// <summary>
         /// フォント名
@@ -22,7 +43,28 @@ namespace Tsumugi.Text.Executing
         /// <summary>
         /// 文字色
         /// </summary>
-        public uint Color { get; set; }
+        public uint Color
+        {
+            get
+            {
+                return _color;
+            }
+            set
+            {
+                HasColor = true;
+                _color = value;
+            }
+        }
+
+        /// <summary>
+        /// 文字色
+        /// </summary>
+        private uint _color;
+
+        /// <summary>
+        /// 文字色の保持フラグ
+        /// </summary>
+        public bool HasColor { get; private set; }
 
         /// <summary>
         /// ルビのサイズ
@@ -62,7 +104,29 @@ namespace Tsumugi.Text.Executing
         /// <summary>
         /// 太字にするか
         /// </summary>
-        public bool Bold { get; set; }
+        public bool Bold
+        {
+            get
+            {
+                return _bold;
+            }
+            set
+            {
+                HasBold = true;
+                _bold = value;
+            }
+        }
+
+        /// <summary>
+        /// 太字にするか
+        /// </summary>
+        private bool _bold;
+
+
+        /// <summary>
+        /// 太字にするかの保持フラグ
+        /// </summary>
+        public bool HasBold { get; private set; }
 
         /// <summary>
         /// 外部フォントファイル名

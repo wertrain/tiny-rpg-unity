@@ -74,5 +74,10 @@
         /// </summary>
         /// <param name="image"></param>
         void SetImage(Image image);
+
+        /// <summary>
+        /// フォントを初期化
+        /// </summary>
+        void ResetFont();
     }
 }

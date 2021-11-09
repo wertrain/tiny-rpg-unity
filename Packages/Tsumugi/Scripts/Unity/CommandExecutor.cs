@@ -28,7 +28,35 @@ namespace Tsumugi.Unity
 
         public void SetFont(Tsumugi.Text.Executing.Font font)
         {
-            throw new System.NotImplementedException();
+            var stringBuilder = new System.Text.StringBuilder();
+
+            // リッチテキスト用のタグを付与
+
+            if (font.HasSize)
+            {
+                _textProcessor.AddText(
+                    $"<size={font.Size}>"
+                );
+            }
+
+            if (font.HasBold)
+            {
+                _textProcessor.AddText(
+                    $"<i>"
+                );
+            }
+
+            if (font.HasColor)
+            {
+                _textProcessor.AddText(
+                    $"<color=#{font.Size}>"
+                );
+            }
+
+            if (stringBuilder.Length > 0)
+            {
+                _textProcessor.AddText(stringBuilder.ToString());
+            }
         }
 
         public void StartNewLine()
